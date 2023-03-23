@@ -1,0 +1,111 @@
+body,::after::before{
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+   
+}
+
+body{
+    overflow-x: hidden;
+    /* border: 1px solid red; */
+}
+
+#nprogress .bar {
+    background: #635dff !important;
+  }
+
+
+.chakra-ui-light{
+    background-color:#f9f9f9
+}
+
+
+ .btn-1{
+    display: flex;
+    justify-content: right;
+    width: 90%;
+    /* margin: 20px 0px; */
+}
+.btn-1 button{
+    border: #635DFF 1px solid;
+    background-color: white;
+    color: #635DFF;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 7px 25px;
+    margin: 20px 0px;
+    transition: all 1ms;
+
+}
+.btn-1 button:hover{
+    border: 1px solid #635DFF;
+    background-color: #635DFF;
+    color: white;
+    transition: ease-in 0.3s;
+
+}
+.heartIcon:hover{
+    fill: #635DFF;
+}
+.editIcon:hover{
+    color: #635DFF;
+    cursor: pointer;
+}
+
+.editIcon2:hover{
+    cursor: pointer;
+    color:red
+}
+
+
+
+.ArrowUp:hover{
+    color:#635DFF;
+}
+.text:hover{
+    color: black;
+}
+
+.textGlow{
+    border:1px solid rgba(151, 150, 150, 0.204)
+}
+
+/* .textGlow:focus{
+
+    outline: 0px;
+    border:1px solid rgb(99, 93, 255);
+    box-shadow: rgb(0 0 0 / 8%) 0px 0.1rem 0.1rem inset, rgb(158 128 255 / 60%) 0px 0px 0.6rem;
+} */
+
+.ql-editor:focus{
+    outline: 0px;
+    border:1px solid rgb(99, 93, 255);
+    box-shadow: rgb(0 0 0 / 8%) 0px 0.1rem 0.1rem inset, rgb(158 128 255 / 60%) 0px 0px 0.6rem;
+}
+.ql-editor p{
+    min-height: 200px;
+    max-height: 700px;
+}
+
+
+.hambtn:hover .sub{
+    background-color: #8480ff;
+}
+
+.sideIcon:hover{
+    border: 1px solid #8480ff;
+}
+
+
+  
+  .cm-scroller , .cm-editor{
+    height: 450px;
+  }
+
+  .css-n1vjwz{
+    height: 0% !important;
+  }
+  
+ 
+
+
