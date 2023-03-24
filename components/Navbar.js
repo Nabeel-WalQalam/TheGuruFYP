@@ -49,7 +49,7 @@ function Navbar() {
   const [menuOpened, setmenuOpened] = useState(false);
   const navbar_search = useRef();
   const dispatch = useDispatch();
-  console.log("user", user);
+  // console.log("user", user);
 
   useEffect(() => {
     let handler = (e) => {
@@ -290,7 +290,7 @@ function Navbar() {
                     // border={"1px"}
                     // borderColor="gray.100"
                     name={user.userInfo ? user.userInfo.name : "User"}
-                    src="httpssss://avatars0.githubusercontent.com/u/1164541?v=4asdasd"
+                    src="#"
                   />
                   <Stack direction={"column"} spacing={0} fontSize={"sm"}>
                     <Text fontWeight={600}>

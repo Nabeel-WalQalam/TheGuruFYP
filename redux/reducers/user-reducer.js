@@ -10,7 +10,6 @@ export const userReducer = createSlice({
   },
   reducers: {
     SET_LOGGEDIN: (state, action) => {
-      console.log("hi", action, state);
       state.loggedIn = true;
       state.userInfo = action.payload;
       //   state.userInfo = action;

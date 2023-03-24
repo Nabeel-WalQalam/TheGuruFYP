@@ -60,7 +60,7 @@ function Auth() {
         password: data.password,
       })
       .then((res) => {
-        console.log("response came", res);
+        // console.log("response came", res);
         if (res.data.success) {
           toast({
             title: "Account Created ! Login Now",
@@ -90,14 +90,14 @@ function Auth() {
   //api for login
 
   const onSubmitForm2 = async (data) => {
-    console.log(data);
+    // console.log(data);
     axios
       .post(`${process.env.NEXT_PUBLIC_Host_URL}api/loginuser`, {
         email: data.email,
         password: data.password,
       })
       .then((res) => {
-        console.log("response came", res);
+        // console.log("response came", res);
         if (res.data.success) {
           toast({
             title: "Welcome To THE GURU",
