@@ -4,7 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const { Socket } = require("socket.io-client");
-const dbConnection = require('./database/connection')
+const dbConnection = require("./database/connection");
 
 const createuser = require("./routes/createuser");
 const loginuser = require("./routes/loginuser");
@@ -16,8 +16,8 @@ const accessChat = require("./routes/accessChat");
 const searchuser = require("./routes/searchuser");
 const creategroupchat = require("./routes/creategroupchat");
 const verifyToken = require("./routes/verifyToken");
-const Chat = require("./database/Models/chatModel")
-const path = require("path")
+const Chat = require("./database/Models/chatModel");
+const path = require("path");
 
 dbConnection();
 const corsOptions = {
@@ -28,10 +28,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-
+app.use("/api/signup", createuser);
 app.use("/api/loginuser", loginuser);
-
-
 
 const server = http.createServer(app);
 const userSocketMap = {};
@@ -93,5 +91,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(5000, () => {
-  console.log("listening on port 5000")
+  console.log("listening on port 5000");
 });

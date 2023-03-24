@@ -25,6 +25,9 @@ import {
   SlideFade,
   useDisclosure,
   Highlight,
+  useToast,
+  Stack,
+  Avatar,
 } from "@chakra-ui/react";
 import { BiSearchAlt } from "react-icons/bi";
 import { BsQuestionSquare, BsQuestionLg, BsUiRadios } from "react-icons/bs";
@@ -34,10 +37,19 @@ import { HiCode } from "react-icons/hi";
 import Script from "next/script";
 import Nav_Search_Expand from "./Nav_Search_Expand";
 import Link from "next/link";
+import { useSelector, useDispatch } from "react-redux";
+import { SET_LOGOUT } from "../redux/reducers/user-reducer";
+import { useRouter } from "next/router";
 function Navbar() {
+  const Router = useRouter();
+  const toast = useToast();
+  // const [user, setuser] = useState(useSelector((state) => state.userReducer));
+  const user = useSelector((state) => state.userReducer);
   const { isOpen, onToggle } = useDisclosure();
   const [menuOpened, setmenuOpened] = useState(false);
   const navbar_search = useRef();
+  const dispatch = useDispatch();
+  console.log("user", user);
 
   useEffect(() => {
     let handler = (e) => {
@@ -73,6 +85,18 @@ function Navbar() {
 
       setmenuOpened(false);
     }
+  };
+
+  const handleLogout = async () => {
+    dispatch(SET_LOGOUT());
+    toast({
+      title: "You are Log-out",
+      position: "bottom",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    Router.push("/");
   };
 
   return (
@@ -258,19 +282,44 @@ function Navbar() {
 
         {/*  3rd component */}
         <Box>
-          <ButtonGroup>
-            <Link href={"/auth"}>
-              <Button colorScheme={"guru"} variant="outline" size="guruMd">
-                <Text>Log in</Text>
-              </Button>
-            </Link>
+          {user.loggedIn ? (
+            <>
+              <Flex align={"center"} justify="center">
+                <Stack direction={"row"} spacing={3} align={"center"}>
+                  <Avatar
+                    // border={"1px"}
+                    // borderColor="gray.100"
+                    name={user.userInfo ? user.userInfo.name : "User"}
+                    src="httpssss://avatars0.githubusercontent.com/u/1164541?v=4asdasd"
+                  />
+                  <Stack direction={"column"} spacing={0} fontSize={"sm"}>
+                    <Text fontWeight={600}>
+                      {user.userInfo ? user.userInfo.name : "User"}
+                    </Text>
+                  </Stack>
+                </Stack>
+                <Box mx={"0.8rem"}></Box>
 
-            <Link href={"/auth"}>
-              <Button colorScheme={"guru"} size="guruMd">
-                <Text>Sign up</Text>
-              </Button>
-            </Link>
-          </ButtonGroup>
+                <Button colorScheme={"guru"} onClick={handleLogout}>
+                  Logout
+                </Button>
+              </Flex>
+            </>
+          ) : (
+            <ButtonGroup>
+              <Link href={"/auth"}>
+                <Button colorScheme={"guru"} variant="outline" size="guruMd">
+                  <Text>Log in</Text>
+                </Button>
+              </Link>
+
+              <Link href={"/auth"}>
+                <Button colorScheme={"guru"} size="guruMd">
+                  <Text>Sign up</Text>
+                </Button>
+              </Link>
+            </ButtonGroup>
+          )}
         </Box>
         {/* 3rd component */}
       </Flex>

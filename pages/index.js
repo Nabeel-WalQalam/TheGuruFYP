@@ -2,10 +2,8 @@ import { Box, Button, Flex, Heading, Spacer } from "@chakra-ui/react";
 import Head from "next/head";
 import Link from "next/link";
 
-import Typed from 'react-typed';
+// import Typed from 'react-typed';
 export default function Home() {
-
-
   return (
     <>
       <Head>
@@ -15,36 +13,61 @@ export default function Home() {
       </Head>
 
       {/* section 1 started*/}
-      <Flex h="450px"
+      <Flex
+        h="450px"
         bg="gray.100"
-        border={"1px"} borderColor="gray.100" maxW="1400px" mx="auto" borderBottomRadius={"8px"} >
-
+        border={"1px"}
+        borderColor="gray.100"
+        maxW="1400px"
+        mx="auto"
+        borderBottomRadius={"8px"}
+      >
         <Box pl="100px" flexBasis="50%" mt="20px">
-          <Heading mt="90px" size={["lg", "xl", "2xl"]} >Every <span> <Heading color="guru.500" size={["lg", "xl", "2xl"]} display={"inline-block"}> <Typed
-            strings={[
-              'Developer',
-              'Everyone',
-            ]}
-            typeSpeed={50}
-            backSpeed={70}
+          <Heading mt="90px" size={["lg", "xl", "2xl"]}>
+            Every{" "}
+            <span>
+              {" "}
+              <Heading
+                color="guru.500"
+                size={["lg", "xl", "2xl"]}
+                display={"inline-block"}
+              >
+                {" "}
+                {/* <Typed
+                  strings={["Developer", "Everyone"]}
+                  typeSpeed={50}
+                  backSpeed={70}
+                  backDelay={2000}
+                  loop
+                /> */}
+              </Heading>
+            </span>
+            has
+          </Heading>
+          <Heading mt="10px" size={["lg", "xl", "2xl"]}>
+            a Guru.
+          </Heading>
 
-            backDelay={2000}
-            loop
-          /></Heading></span>has</Heading>
-          <Heading mt="10px" size={["lg", "xl", "2xl"]}>a Guru.</Heading>
-
-
-
-          <Heading color="guru.500" mt="40px" size={["lg", "xl", "2xl"]}>Just ask Guru!</Heading>
-          <Link href={"/askquestion"} legacyBehavior><a><Button mt="30px" colorScheme="guru">Ask Question</Button></a></Link>
-
+          <Heading color="guru.500" mt="40px" size={["lg", "xl", "2xl"]}>
+            Just ask Guru!
+          </Heading>
+          <Link href={"/askquestion"} legacyBehavior>
+            <a>
+              <Button mt="30px" colorScheme="guru">
+                Ask Question
+              </Button>
+            </a>
+          </Link>
         </Box>
 
         <Box flexBasis="50%" mt="20px">
-
-          <Box h="500px" backgroundImage={"/images/homepage1.png"} backgroundRepeat="no-repeat" backgroundPosition={"center"} backgroundSize="contain">
-          </Box>
-
+          <Box
+            h="500px"
+            backgroundImage={"/images/homepage1.png"}
+            backgroundRepeat="no-repeat"
+            backgroundPosition={"center"}
+            backgroundSize="contain"
+          ></Box>
         </Box>
       </Flex>
       {/* section 1 ended */}
