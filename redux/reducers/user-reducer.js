@@ -4,26 +4,17 @@ import axios from "axios";
 export const userReducer = createSlice({
   name: "user",
   initialState: {
-    loggedIn: false,
-    userInfo: [],
-    userToken: null,
+    currentUser: null,
   },
   reducers: {
     SET_LOGGEDIN: (state, action) => {
-      state.loggedIn = true;
-      state.userInfo = action.payload;
-      //   state.userInfo = action;
-    },
-
-    SET_LOGOUT: (state, action) => {
-      state.loggedIn = false;
-      state.userInfo = null;
+      state.currentUser = action.payload;
       //   state.userInfo = action;
     },
   },
 });
 
-export const { SET_LOGGEDIN, SET_LOGOUT } = userReducer.actions;
+export const { SET_LOGGEDIN } = userReducer.actions;
 
 // export const loginUser = (payload) => (dispatch) => {
 //   console.log("inside asyn: ", payload);

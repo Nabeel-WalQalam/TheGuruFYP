@@ -107,7 +107,8 @@ function Auth() {
             isClosable: true,
           });
           reset();
-          dispatch(SET_LOGGEDIN(res.data.payload.user));
+          dispatch(SET_LOGGEDIN(res.data.payload));
+          localStorage.setItem("token", res.data.payload.token);
           Router.push("/");
         } else {
           toast({

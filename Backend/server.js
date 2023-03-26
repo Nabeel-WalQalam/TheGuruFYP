@@ -30,6 +30,7 @@ app.use(express.json());
 
 app.use("/api/signup", createuser);
 app.use("/api/loginuser", loginuser);
+app.use("/api/verifytoken", verifyToken);
 
 const server = http.createServer(app);
 const userSocketMap = {};

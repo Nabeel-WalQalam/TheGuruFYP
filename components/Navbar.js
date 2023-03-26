@@ -38,8 +38,8 @@ import Script from "next/script";
 import Nav_Search_Expand from "./Nav_Search_Expand";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
-import { SET_LOGOUT } from "../redux/reducers/user-reducer";
 import { useRouter } from "next/router";
+import { SET_LOGGEDIN } from "../redux/reducers/user-reducer";
 function Navbar() {
   const Router = useRouter();
   const toast = useToast();
@@ -49,7 +49,7 @@ function Navbar() {
   const [menuOpened, setmenuOpened] = useState(false);
   const navbar_search = useRef();
   const dispatch = useDispatch();
-  // console.log("user", user);
+  console.log("user", user);
 
   useEffect(() => {
     let handler = (e) => {
@@ -88,7 +88,7 @@ function Navbar() {
   };
 
   const handleLogout = async () => {
-    dispatch(SET_LOGOUT());
+    dispatch(SET_LOGGEDIN(null));
     toast({
       title: "You are Log-out",
       position: "bottom",
@@ -96,6 +96,7 @@ function Navbar() {
       duration: 3000,
       isClosable: true,
     });
+    localStorage.clear();
     Router.push("/");
   };
 
@@ -282,19 +283,19 @@ function Navbar() {
 
         {/*  3rd component */}
         <Box>
-          {user.loggedIn ? (
+          {user.currentUser ? (
             <>
               <Flex align={"center"} justify="center">
                 <Stack direction={"row"} spacing={3} align={"center"}>
                   <Avatar
                     // border={"1px"}
                     // borderColor="gray.100"
-                    name={user.userInfo ? user.userInfo.name : "User"}
+                    name={user ? user.currentUser.user.name : "User"}
                     src="#"
                   />
                   <Stack direction={"column"} spacing={0} fontSize={"sm"}>
                     <Text fontWeight={600}>
-                      {user.userInfo ? user.userInfo.name : "User"}
+                      {user ? user.currentUser.user.name : "User"}
                     </Text>
                   </Stack>
                 </Stack>
