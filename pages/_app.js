@@ -10,7 +10,7 @@ import store from "../redux/store";
 import { Provider, useDispatch } from "react-redux";
 import axios from "axios";
 
-import { SET_LOGGEDIN } from "../redux/reducers/user-reducer";
+import { setCurrentUser } from "../redux/reducers/user-reducer";
 
 // import "monaco-editor/esm/vs/base/browser/ui/actionbar/actionbar.css";
 // import "monaco-editor/esm/vs/base/browser/ui/aria/aria.css";///
@@ -60,7 +60,7 @@ function MyApp({ Component, pageProps }) {
         .then((res) => {
           //   console.log("response came 2", res);
           if (res.data.success) {
-            store.dispatch(SET_LOGGEDIN(res.data.payload));
+            store.dispatch(setCurrentUser(res.data.payload));
           } else {
             localStorage.clear();
           }
@@ -76,7 +76,7 @@ function MyApp({ Component, pageProps }) {
           //     isClosable: true,
           //   });
           //   reset();
-          //   dispatch(SET_LOGGEDIN(res.data.payload));
+          //   dispatch(setCurrentUser(res.data.payload));
           //   localStorage.setItem("token", res.data.payload.token);
           //   Router.push("/");
           // } else {

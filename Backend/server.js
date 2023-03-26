@@ -15,7 +15,9 @@ const getallchats = require("./routes/getallchats");
 const accessChat = require("./routes/accessChat");
 const searchuser = require("./routes/searchuser");
 const creategroupchat = require("./routes/creategroupchat");
+const postQuestion = require("./routes/postQuestion");
 const verifyToken = require("./routes/verifyToken");
+const getAllQuestions = require("./routes/getQuestions");
 const Chat = require("./database/Models/chatModel");
 const path = require("path");
 
@@ -31,6 +33,10 @@ app.use(express.json());
 app.use("/api/signup", createuser);
 app.use("/api/loginuser", loginuser);
 app.use("/api/verifytoken", verifyToken);
+app.use("/api/postQuestion", postQuestion);
+// api/postQuestion
+//get Request
+app.use("/api/getAllQuestion", getAllQuestions);
 
 const server = http.createServer(app);
 const userSocketMap = {};

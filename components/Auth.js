@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { SET_LOGGEDIN } from "../redux/reducers/user-reducer";
+import { setCurrentUser } from "../redux/reducers/user-reducer";
 
 export const Auth = ({ isLoading }) => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export const Auth = ({ isLoading }) => {
         .then((res) => {
           //   console.log("response came 2", res);
           if (res.data.success) {
-            dispatch(SET_LOGGEDIN(res.data.payload));
+            dispatch(setCurrentUser(res.data.payload));
           } else {
             localStorage.clear();
           }
@@ -36,7 +36,7 @@ export const Auth = ({ isLoading }) => {
           //     isClosable: true,
           //   });
           //   reset();
-          //   dispatch(SET_LOGGEDIN(res.data.payload));
+          //   dispatch(setCurrentUser(res.data.payload));
           //   localStorage.setItem("token", res.data.payload.token);
           //   Router.push("/");
           // } else {

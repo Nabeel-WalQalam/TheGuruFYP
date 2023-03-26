@@ -7,14 +7,14 @@ export const userReducer = createSlice({
     currentUser: null,
   },
   reducers: {
-    SET_LOGGEDIN: (state, action) => {
+    setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
       //   state.userInfo = action;
     },
   },
 });
 
-export const { SET_LOGGEDIN } = userReducer.actions;
+export const { setCurrentUser } = userReducer.actions;
 
 // export const loginUser = (payload) => (dispatch) => {
 //   console.log("inside asyn: ", payload);
@@ -24,7 +24,7 @@ export const { SET_LOGGEDIN } = userReducer.actions;
 //     })
 //     .then((res) => {
 //       console.log("response came", res);
-//       dispatch(SET_LOGGEDIN(true));
+//       dispatch(setCurrentUser(true));
 //     })
 //     .catch((err) => {
 //       console.log("error");

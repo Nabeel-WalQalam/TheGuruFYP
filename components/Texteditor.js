@@ -1,48 +1,33 @@
-import React from "react";
-import { useQuill } from "react-quilljs";
-import { Box } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
 
-import "quill/dist/quill.snow.css";
-import { useState } from "react";
-import { Button } from "@chakra-ui/react";
+export const Texteditor = ({ setText }) => {
+  const [value, setValue] = useState("");
+  // console.log("quill", value);
 
-export const Texteditor = () => {
-  const modules = {
-    toolbar: [
-      ["bold", "italic", "underline", "strike",'code-block'],
-       
-      [{ align: [] }],
+  useEffect(() => {
+    setText(value);
+  }, [value]);
 
-      [{ list: "ordered" }, { list: "bullet" }],
+  const toolbarOptions = [
+    ["bold", "italic", "underline", "strike"], // text formatting buttons
+    [{ header: [1, 2, 3, 4, 5, 6, false] }], // header dropdown
+    [{ list: "ordered" }, { list: "bullet" }], // list buttons
+    [{ indent: "-1" }, { indent: "+1" }], // indent buttons
+    [{ align: [] }],
+    [{ "code-block": "code-block" }],
+    ["link", "image", "video"], // media buttons
+    ["clean"], // remove formatting button
+  ];
 
-      [{ size: ["small", false, "large", "huge"] }],
-      ["link"],
-      [{ color: ["white", "Black"] }, { background: ["pink", "black", "red"] }],
-    ],
-  };
-  const placeholder = "Enter Your Answer...";
-  const { quill, quillRef } = useQuill({ modules, placeholder });
-
-  const [vale, setvale] = useState();
-  React.useEffect(() => {
-    if (quill) {
-      quill.on("text-change", () => {
-        console.log(quillRef.current.firstChild.innerHTML); // Get innerHTML using quillRef
-        setvale(quillRef.current.firstChild.innerHTML);
-      });
-    }
-  }, [quill]);
   return (
-    <>
-      <Box
-        className="textGlow"
-        // width={"80%"}
-        marginInline="auto"
-      >
-        <div className="textEditor">
-          <div ref={quillRef} />
-        </div>
-      </Box>
-    </>
+    <ReactQuill
+      className={"editor"}
+      modules={{ toolbar: toolbarOptions }}
+      value={value}
+      onChange={setValue}
+    />
   );
 };

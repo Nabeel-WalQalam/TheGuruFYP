@@ -12,7 +12,7 @@ import Script from "next/script";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loginUser } from "../redux/reducers/user-reducer";
-import { SET_LOGGEDIN } from "../redux/reducers/user-reducer";
+import { setCurrentUser } from "../redux/reducers/user-reducer";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -107,7 +107,7 @@ function Auth() {
             isClosable: true,
           });
           reset();
-          dispatch(SET_LOGGEDIN(res.data.payload));
+          dispatch(setCurrentUser(res.data.payload));
           localStorage.setItem("token", res.data.payload.token);
           Router.push("/");
         } else {

@@ -39,7 +39,7 @@ import Nav_Search_Expand from "./Nav_Search_Expand";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import { SET_LOGGEDIN } from "../redux/reducers/user-reducer";
+import { setCurrentUser } from "../redux/reducers/user-reducer";
 function Navbar() {
   const Router = useRouter();
   const toast = useToast();
@@ -88,7 +88,7 @@ function Navbar() {
   };
 
   const handleLogout = async () => {
-    dispatch(SET_LOGGEDIN(null));
+    dispatch(setCurrentUser(null));
     toast({
       title: "You are Log-out",
       position: "bottom",

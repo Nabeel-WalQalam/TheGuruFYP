@@ -9,7 +9,6 @@ const User = require("../database/Models/userModel");
 const privateKey = "hunfaisagoodboy";
 
 router.get("/", authuser, async (req, res) => {
-  console.log(req.headers.token);
   const token = req.headers.token;
   if (req.user) {
     const email = req.user.email;
