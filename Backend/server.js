@@ -37,6 +37,12 @@ app.use("/api/postQuestion", postQuestion);
 // api/postQuestion
 //get Request
 app.use("/api/getAllQuestion", getAllQuestions);
+app.use("/api/searchuser", searchuser);
+app.use("/api/accessChat", accessChat);
+app.use("/api/getallchats", getallchats);
+app.use("/api/fetchmessages", fetchmessages);
+app.use("/api/sendmsg", sendmsg);
+
 
 const server = http.createServer(app);
 const userSocketMap = {};

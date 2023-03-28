@@ -51,7 +51,9 @@ function Navbar() {
   const dispatch = useDispatch();
   console.log("user", user);
 
+
   useEffect(() => {
+
     let handler = (e) => {
       if (navbar_search.current)
         if (!navbar_search.current.contains(e.target)) {
@@ -261,6 +263,7 @@ function Navbar() {
                 if (!isOpen) onToggle();
               }}
               border="1px"
+              borderColor={"transparent"}
               borderRadius={"8px"}
               variant="filled"
               type="search"

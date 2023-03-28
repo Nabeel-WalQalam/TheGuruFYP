@@ -11,7 +11,8 @@ router.get("/", authuser, async (req, res) => {
 
     if (req.user) {
 
-        const { chat_id } = req.params;
+        const { chat_id } = req.headers;
+
         try {
 
             const messages = await Message.find({ chat: chat_id })
