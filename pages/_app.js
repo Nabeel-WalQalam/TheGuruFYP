@@ -12,11 +12,9 @@ import axios from "axios";
 
 import { setCurrentUser } from "../redux/reducers/user-reducer";
 
-// import "monaco-editor/esm/vs/base/browser/ui/actionbar/actionbar.css";
-// import "monaco-editor/esm/vs/base/browser/ui/aria/aria.css";///
 
 import React, { useEffect, useState } from "react";
-import { Auth } from "../components/Auth";
+import SocketWrapper from "../components/socketWrapper";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
@@ -60,7 +58,7 @@ function MyApp({ Component, pageProps }) {
         .then((res) => {
           //   console.log("response came 2", res);
           if (res.data.success) {
-            store.dispatch(setCurrentUser(res.data.payload));
+            store.dispatch(setCurrentUser(res.data.payload.user));
           } else {
             localStorage.clear();
           }
@@ -111,11 +109,13 @@ function MyApp({ Component, pageProps }) {
           <Text>Loading</Text>
         </Flex>
       ) : (
-        <ChakraProvider theme={theme}>
+        <ChakraProvider theme={theme} toastOptions={{ defaultOptions: { status: "error", duration: 5000, isClosable: true } }}>
           <Provider store={store}>
-            <Navbar />
-            <SideBar />
-            <Component {...pageProps} />
+            <SocketWrapper>
+              <Navbar />
+              <SideBar />
+              <Component {...pageProps} />
+            </SocketWrapper>
           </Provider>
         </ChakraProvider>
       )}

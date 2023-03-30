@@ -21,7 +21,7 @@ function MyChats({ setselectedChat, setopenChatbox, name, chat }) {
   const handleClick = () => {
     setopenChatbox(true);
     dispatch(SET_ACTIVE_CHAT({ chat: chat }));
-    dispatch(fetchMessages({ chat_id: chat._id, token: user.token }))
+    dispatch(fetchMessages({ chat_id: chat._id }))
   }
 
   return (

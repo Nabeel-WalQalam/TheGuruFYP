@@ -7,11 +7,10 @@ export const Auth = ({ isLoading }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      console.log("hi");
       let token = localStorage.getItem("token");
       //   console.log(token);
       isLoading = true;
-      setTimeout(() => {}, 500000);
+      setTimeout(() => { }, 500000);
       axios
         .get(`${process.env.NEXT_PUBLIC_Host_URL}api/verifytoken`, {
           headers: {
@@ -21,7 +20,7 @@ export const Auth = ({ isLoading }) => {
         .then((res) => {
           //   console.log("response came 2", res);
           if (res.data.success) {
-            dispatch(setCurrentUser(res.data.payload));
+            dispatch(setCurrentUser(res.data.payload.user));
           } else {
             localStorage.clear();
           }

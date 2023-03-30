@@ -44,12 +44,11 @@ function Navbar() {
   const Router = useRouter();
   const toast = useToast();
   // const [user, setuser] = useState(useSelector((state) => state.userReducer));
-  const user = useSelector((state) => state.userReducer);
+  const user = useSelector((state) => state.userReducer.currentUser);
   const { isOpen, onToggle } = useDisclosure();
   const [menuOpened, setmenuOpened] = useState(false);
   const navbar_search = useRef();
   const dispatch = useDispatch();
-  console.log("user", user);
 
 
   useEffect(() => {
@@ -286,19 +285,19 @@ function Navbar() {
 
         {/*  3rd component */}
         <Box>
-          {user.currentUser ? (
+          {user ? (
             <>
               <Flex align={"center"} justify="center">
                 <Stack direction={"row"} spacing={3} align={"center"}>
                   <Avatar
                     // border={"1px"}
                     // borderColor="gray.100"
-                    name={user ? user.currentUser.user.name : "User"}
+                    name={user ? user.name : "User"}
                     src="#"
                   />
                   <Stack direction={"column"} spacing={0} fontSize={"sm"}>
                     <Text fontWeight={600}>
-                      {user ? user.currentUser.user.name : "User"}
+                      {user ? user.name : "User"}
                     </Text>
                   </Stack>
                 </Stack>

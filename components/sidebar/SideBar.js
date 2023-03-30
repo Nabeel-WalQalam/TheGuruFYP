@@ -39,6 +39,7 @@ function SideBar() {
     })
       .then(res => {
         if (res.data.success) {
+          // console.log(res.data)
           dispatch(SET_CHATS_LIST({ chats: res.data.payload }))
         }
       }).catch(function (error) {

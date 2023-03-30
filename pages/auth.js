@@ -48,7 +48,7 @@ function Auth() {
       container.classList.remove("right-panel-active");
     });
 
-    return () => {};
+    return () => { };
   }, []);
 
   //sumbit Sugn-Up data
@@ -62,23 +62,13 @@ function Auth() {
       .then((res) => {
         // console.log("response came", res);
         if (res.data.success) {
-          toast({
-            title: "Account Created ! Login Now",
-            position: "top-left",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          });
+          toast({ title: "Account Created ! Login Now", status: "success" });
           reset();
           let button = document.getElementById("signIn");
           button.click();
         } else {
           toast({
-            title: res.data.payload,
-            status: "error",
-            position: "top-left",
-            duration: 6000,
-            isClosable: true,
+            title: res.data.payload
           });
         }
       })
@@ -101,22 +91,15 @@ function Auth() {
         if (res.data.success) {
           toast({
             title: "Welcome To THE GURU",
-            position: "top-left",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
+            status: "success"
           });
           reset();
-          dispatch(setCurrentUser(res.data.payload));
           localStorage.setItem("token", res.data.payload.token);
+          dispatch(setCurrentUser(res.data.payload.user));
           Router.push("/");
         } else {
           toast({
-            title: res.data.payload,
-            status: "error",
-            position: "top-left",
-            duration: 3000,
-            isClosable: true,
+            title: res.data.payload
           });
         }
       })
