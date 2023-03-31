@@ -32,7 +32,7 @@ function FindUserModal({ children }) {
       return
     }
     setshowloading(true);
-    axios.get(`${process.env.NEXT_PUBLIC_Host_URL}api/searchuser?search=${searchText}`, { headers: { token: user.token } })
+    axios.get(`${process.env.NEXT_PUBLIC_Host_URL}api/searchuser?search=${searchText}`, { headers: { token: localStorage.getItem('token') } })
       .then(res => {
         // console.log(res.data);
         if (res.data.success) {

@@ -31,7 +31,7 @@ function SUprofile({ name, img, _id, onClose }) {
     }
     setaxiosinprocess(true);
 
-    axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/accesschat`, { user_id: _id }, { headers: { token: user.token } })
+    axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/accesschat`, { user_id: _id }, { headers: { token: localStorage.getItem('token') } })
       .then(res => {
         console.log(res)
         if (res.data.success) {

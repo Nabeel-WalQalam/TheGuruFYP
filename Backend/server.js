@@ -46,7 +46,11 @@ app.use("/api/sendmsg", sendmsg);
 
 const server = http.createServer(app);
 const userSocketMap = {};
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  }
+});
 
 function getAllConnectedClients(roomId) {
   //get  the given room from roomID from all...
@@ -62,6 +66,35 @@ function getAllConnectedClients(roomId) {
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
+
+
+  socket.on("setup", (user_id) => {
+    console.log("setup")
+    socket.join(user_id);
+    // let [temp,rooms]=socket.rooms
+    // console.log(rooms)
+    socket.emit("user joined the room", { user_id, onlineUsers: socket.onlineUsers });
+    socket.broadcast.emit("i am online", user_id);
+
+  });
+
+
+  socket.on("new message", (message) => {
+    console.log("new meesage")
+    const chat = message.chat;
+    chat.users.forEach((user) => {
+      if (message.sender._id === user._id) return;
+      socket.to(user._id).emit("message received", message);
+    })
+
+  });
+
+
+
+
+
+
+
   socket.on("join", ({ roomId, username }) => {
     //get the username... to room
     // console.log(roomId, username);

@@ -44,7 +44,6 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      console.log("hi");
       let token = localStorage.getItem("token");
       //   console.log(token);
       setLoading(true);

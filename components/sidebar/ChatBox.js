@@ -26,6 +26,8 @@ import React from "react";
 import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES } from "../../redux/reducers/chat-reducer";
+import { socket } from "../../redux/reducers/socket-reducer";
+import { gsocket } from "../socketWrapper";
 
 function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
     const { chatsList, activeChat, activeChatMessages } = useSelector(
@@ -62,9 +64,9 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                     dispatch(APPEND_ACTIVE_CHAT_MESSAGES({ message: msg }))
 
 
-                    if (socket.connected) {
+                    if (gsocket.connected) {
 
-                        socket.emit("new message", res.data.payload);
+                        gsocket.emit("new message", res.data.payload);
 
 
                     }
@@ -165,7 +167,9 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                         p="3"
                     >
                         {activeChatMessages?.map((msg, i) => {
-                            if (user._id !== msg.sender) {
+
+                            if (user._id === msg.sender._id) {
+
                                 return (
                                     <Flex w="100%" justify="flex-end" key={i}>
                                         <Flex
