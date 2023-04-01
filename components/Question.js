@@ -22,6 +22,7 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { TimeIcon, EditIcon, DeleteIcon, ViewIcon } from "@chakra-ui/icons";
 import { Texteditor } from "../Components/Texteditor.js";
 export default function Home() {
+  const [quillText, setquillText] = useState("");
   const editHandler = () => {
     // console.log("Edit button");
   };
@@ -220,7 +221,9 @@ export default function Home() {
       <Heading size={"lg"} my={"10"} ml="9rem" color={"#635DFF"}>
         Submit Your Answer
       </Heading>
-      <Texteditor />
+      <Box my={"2rem"} w={"80%"} marginInline="auto">
+        <Texteditor setText={setquillText} />
+      </Box>
     </>
   );
 }
