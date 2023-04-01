@@ -12,15 +12,11 @@ function SocketWrapper({ children }) {
     const dispatch = useDispatch()
     const activeChat = useSelector((state) => state.chatReducer.activeChat)
     const user = useSelector(state => state.userReducer.currentUser)
-    console.log(activeChat)
-    console.log("render")
+
 
     const appendMsg = (msg) => {
-        console.log("here")
-        console.log(msg.chat._id)
-        console.log(activeChat._id)
+
         if (msg.chat._id === activeChat._id) {
-            console.log("dispatch")
             dispatch(APPEND_ACTIVE_CHAT_MESSAGES({ message: msg }))
         }
     }
@@ -38,7 +34,7 @@ function SocketWrapper({ children }) {
 
 
         gsocket.on("message received", (msg) => {
-            console.log("received", msg)
+
             appendMsg(msg)
 
         })
