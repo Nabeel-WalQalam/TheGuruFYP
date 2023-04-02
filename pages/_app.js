@@ -37,30 +37,7 @@ function MyApp({ Component, pageProps }) {
           } else {
             localStorage.clear();
           }
-
-          //   isLoading(false);
           setLoading(false);
-          // if (res.data.success) {
-          //   toast({
-          //     title: "Welcome To THE GURU",
-          //     position: "top-left",
-          //     status: "success",
-          //     duration: 3000,
-          //     isClosable: true,
-          //   });
-          //   reset();
-          //   dispatch(setCurrentUser(res.data.payload));
-          //   localStorage.setItem("token", res.data.payload.token);
-          //   Router.push("/");
-          // } else {
-          //   toast({
-          //     title: res.data.payload,
-          //     status: "error",
-          //     position: "top-left",
-          //     duration: 3000,
-          //     isClosable: true,
-          //   });
-          // }
         })
         .catch((err) => {
           console.log("error");
