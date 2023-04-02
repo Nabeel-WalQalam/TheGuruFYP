@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { APPEND_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from '../redux/reducers/chat-reducer';
 import io from "socket.io-client";
+import { useRef } from 'react';
 
 
 export let gsocket = '';
@@ -13,10 +14,17 @@ function SocketWrapper({ children }) {
     const activeChat = useSelector((state) => state.chatReducer.activeChat)
     const user = useSelector(state => state.userReducer.currentUser)
     const chatsList = useSelector(state => state.chatReducer.chatsList)
+    const activeChatRef = useRef();
+
+
+    useEffect(() => {
+        activeChatRef.current = activeChat
+
+    }, [activeChat])
 
 
     const appendMsg = (msg) => {
-        if (msg.chat._id === activeChat._id) {//
+        if (msg.chat._id === activeChatRef.current._id) {//
 
             dispatch(APPEND_ACTIVE_CHAT_MESSAGES({ message: msg }))
             const newState = chatsList.map(element => {
@@ -49,7 +57,7 @@ function SocketWrapper({ children }) {
             gsocket.off("connect");
             gsocket.off("message received")
         }
-    }, [user, activeChat])
+    }, [user])
 
 
 

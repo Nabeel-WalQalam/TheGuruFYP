@@ -66,7 +66,9 @@ function getAllConnectedClients(roomId) {
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
-
+  socket.on("disconnect", (reason) => {
+    console.log("socket disconnect")
+  });
 
   socket.on("setup", (user_id) => {
     console.log("setup")
