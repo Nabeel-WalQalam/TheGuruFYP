@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userAnswers = require("../database/Models/useranswer");
+const Questions = require("../database/Models/userquestions");
 
 module.exports = router;
 
@@ -13,9 +14,21 @@ router.post("/", async (req, res) => {
       .find({ question_id: q_id })
       .populate("question_id")
       .then((answers) => {
-        // console.log("Answers:", answers);
-        res.send({ success: true, payload: answers });
-        // console.log("Question:", answers[0].question);
+        if (answers.length === 0) {
+          // If there are no answers, retrieve the question separately
+          return Questions.findById(q_id);
+        } else {
+          console.log("Answers:", answers);
+          // Send the answers to the client
+          res.send({ success: true, payload: answers });
+        }
+      })
+      .then((question) => {
+        if (question) {
+          console.log("Question:", question);
+          // Send the question to the client
+          res.send({ success: true, payload: [question] });
+        }
       })
       .catch((err) => {
         console.error(err);

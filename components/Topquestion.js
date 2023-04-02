@@ -65,7 +65,7 @@ export const Topquestion = ({ questions }) => {
                     alt="Dan Abramov"
                   />{" "}
                   <Box fontWeight={"sm"} mx="4px">
-                    {data.user[0].name ? data.user[0].name : ""}
+                    {data.user.name ? data.user.name : ""}
                   </Box>
                 </Box>
               </Flex>

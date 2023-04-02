@@ -13,11 +13,12 @@ import {
   Divider,
   Button,
 } from "@chakra-ui/react";
+import ReactHtmlParser from "react-html-parser";
 
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { BsFillReplyFill } from "react-icons/bs";
 
-export const Answers = () => {
+export const Answers = ({ Answers }) => {
   const [show, setShow] = useState(false);
   const handleToggle = () => setShow(!show);
 
@@ -66,7 +67,7 @@ export const Answers = () => {
                 // color="black"
                 fontWeight={"bold"}
               >
-                Nabeel Muzaffar
+                {Answers ? Answers.user.name : ""}
               </Center>
             </Box>
             <Box
@@ -87,28 +88,13 @@ export const Answers = () => {
             direction={"row"}
             my="3"
             ml="6"
+            bg={"gray.100"}
+            p={"0.5rem"}
           >
             <Box width={"95%"}>
-              <Collapse startingHeight={50} in={show}>
-                JavaScript is a scripting or programming language that allows
-                you to implement complex features on web pages — every time a
-                web page does more than just sit there and display static
-                information for you to look at displaying timely content
-                updates, interactive maps, animated 2D/3D graphics, scrolling
-                video jukeboxes, etc. JavaScript is a scripting or programming
-                language that allows you to implement complex features on web
-                pages every time a web page does more than just sit there and
-                display static information for you to look at — displaying
-                timely content updates, interactive maps, animated 2D/3D
-                graphics, scrolling video jukeboxes, etc.
-              </Collapse>
-              <Text
-                color={"#635DFF"}
-                fontWeight={"bold"}
-                onClick={handleToggle}
-              >
-                Show{show ? " Less " : " More "}
-              </Text>
+              <Box p={"2rem"}>
+                {Answers ? ReactHtmlParser(Answers.asnwer_description) : ""}
+              </Box>
             </Box>
           </Flex>
 
@@ -152,7 +138,7 @@ export const Answers = () => {
               color={"white"}
               borderRadius={"5"}
             >
-              5000
+              {Answers ? Answers.votes : 0}
             </Text>
             <Box
               mx={"5"}
@@ -181,7 +167,7 @@ export const Answers = () => {
               <Text ml={"1"}>Comment</Text>
             </Box>
           </Flex>
-          <Box
+          {/* <Box
             // border={"1"}
             display="flex"
             alignItems={"center"}
@@ -194,7 +180,7 @@ export const Answers = () => {
           >
             <ViewIcon />
             <Text mx={"4"}>1090 Views</Text>
-          </Box>
+          </Box> */}
         </Flex>
       </Box>
       {/* <Divider w={"70%"} marginInline="auto" /> */}

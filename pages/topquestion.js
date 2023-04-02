@@ -36,7 +36,7 @@ import Link from "next/link";
 const Question = ({ questions }) => {
   const user = useSelector((state) => state.userReducer.currentUser);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log("data", user);
+  console.log("data", questions);
   return (
     <>
       {questions.length ? (
