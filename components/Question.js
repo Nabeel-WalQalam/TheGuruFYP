@@ -198,12 +198,12 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                         : ReactHtmlParser(Allanswer[0].question_id.description)}
                     </Box>
                   </Box>
-                  <Box my="3">
+                  <Flex my="3" gap={"0.5rem"}>
                     {Allanswer[0].tags
                       ? Allanswer[0].tags.map((tag) => {
                           return (
                             <Tag
-                              mx={"0.2rem"}
+                              mx={"0.5rem"}
                               key={tag}
                               bg="#635DFF"
                               color={"white"}
@@ -221,7 +221,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                             </Tag>
                           );
                         })}
-                  </Box>
+                  </Flex>
                 </Flex>
               </Flex>
 
