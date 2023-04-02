@@ -40,6 +40,8 @@ import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { setCurrentUser } from "../redux/reducers/user-reducer";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 function Navbar() {
   const Router = useRouter();
   const toast = useToast();
@@ -49,6 +51,27 @@ function Navbar() {
   const [menuOpened, setmenuOpened] = useState(false);
   const navbar_search = useRef();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    NProgress.configure({ showSpinner: false });
+    const handleStart = (url) => {
+      NProgress.start();
+    };
+
+    const handleStop = () => {
+      NProgress.done();
+    };
+
+    Router.events.on("routeChangeStart", handleStart);
+    Router.events.on("routeChangeComplete", handleStop);
+    Router.events.on("routeChangeError", handleStop);
+
+    return () => {
+      Router.events.off("routeChangeStart", handleStart);
+      Router.events.off("routeChangeComplete", handleStop);
+      Router.events.off("routeChangeError", handleStop);
+    };
+  }, [Router]);
 
 
   useEffect(() => {

@@ -24,6 +24,9 @@ function MyChats({ setselectedChat, setopenChatbox, name, chat }) {
     dispatch(fetchMessages({ chat_id: chat._id }))
   }
 
+  const sliceLatestmsg = (msg) => {
+    return msg.slice(0, 24)
+  }
   return (
     <>
 
@@ -89,8 +92,8 @@ function MyChats({ setselectedChat, setopenChatbox, name, chat }) {
             <HStack mt={"5px"} spacing="1">
               <Box w="220px" > <Text fontStyle={"italic"}>
 
-                {/* {chat.latestMessage ? sliceLatestmsg(chat.latestMessage.messege) : "Start a conversion..."} */}
-                Start a conversion...
+                {chat.latestMessage ? sliceLatestmsg(chat.latestMessage.messege) : "Start a conversion..."}
+                {/* Start a conversion... */}
               </Text></Box>
               {/* {!chat.isGroupChat? <><CircleIcon boxSize="10px" color={onlineStatus==="Online"?'green.500':'red.500'} />
                         <Text fontSize={"12px"}>{onlineStatus}</Text></>:""} */}

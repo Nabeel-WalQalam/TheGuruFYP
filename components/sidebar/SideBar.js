@@ -54,8 +54,9 @@ function SideBar() {
   }
 
   useEffect(() => {
-    fetchChats();
-  }, [])
+    if (user)
+      fetchChats();
+  }, [user])
 
 
   useEffect(() => {
@@ -72,52 +73,45 @@ function SideBar() {
 
   }, [openChatbox])
 
-
-
   return (
-    <>
+    <Box style={sideStyles} >
+      <Box mt="100px">
 
-      <Box style={sideStyles} >
-        <Box mt="100px">
-
-          <FindUserModal>
-            <Button colorScheme={"guru"} display="block" mx="auto" w="180px" ><Icon as={BiSearchAlt} position="absolute" left={"10px"} boxSize="23px" top="8px" /> Find Users</Button>
-          </FindUserModal>
-
-        </Box>
-
-
-        <Box pt="20px">
-          {/* <MyChats setopenChatbox={setopenChatbox} setselectedChat={setselectedChat} />
- 
-  <MyChats  setopenChatbox={setopenChatbox} setselectedChat={setselectedChat}/>
-  <MyChats  setopenChatbox={setopenChatbox} setselectedChat={setselectedChat}/> */}
-          {chatsList.map((chat) => {
-            return (
-              <Box key={chat._id}>
-                <MyChats setopenChatbox={setopenChatbox} setselectedChat={setselectedChat} name={chat.users[0].name} chat={chat} />
-              </Box>
-            )
-          })}
-
-        </Box>
-
-
-
-
-        <Button position={"fixed"} colorScheme="guru" borderRadius={"full"} px="5" height={"34px"} left="-84px" bottom={"100px"} onClick={() => { setopenSidebar(!openSidebar) }} >Chats</Button>
-
-
-        <Box position={"absolute"} bottom="0px" left={"-450px"}>
-          <ScaleFade in={isOpen} initialScale={0.9} unmountOnExit={true}>
-            <ChatBox onToggle={onToggle} setopenChatbox={setopenChatbox} openChatbox={openChatbox} activeChat={activeChat} />
-          </ScaleFade>
-        </Box>
-
+        <FindUserModal>
+          <Button colorScheme={"guru"} display="block" mx="auto" w="180px" ><Icon as={BiSearchAlt} position="absolute" left={"10px"} boxSize="23px" top="8px" /> Find Users</Button>
+        </FindUserModal>
 
       </Box>
 
-    </>
+
+      <Box pt="20px">
+
+        {chatsList.map((chat) => {
+          return (
+            <Box key={chat._id}>
+              <MyChats setopenChatbox={setopenChatbox} setselectedChat={setselectedChat} name={chat.users[0].name} chat={chat} />
+            </Box>
+          )
+        })}
+
+      </Box>
+
+
+
+
+      <Button position={"fixed"} colorScheme="guru" borderRadius={"full"} px="5" height={"34px"} left="-84px" bottom={"100px"} onClick={() => { setopenSidebar(!openSidebar) }} >Chats</Button>
+
+
+      <Box position={"absolute"} bottom="0px" left={"-450px"}>
+        <ScaleFade in={isOpen} initialScale={0.9} unmountOnExit={true}>
+          <ChatBox onToggle={onToggle} setopenChatbox={setopenChatbox} openChatbox={openChatbox} activeChat={activeChat} />
+        </ScaleFade>
+      </Box>
+
+
+    </Box>
+
+
   )
 }
 
