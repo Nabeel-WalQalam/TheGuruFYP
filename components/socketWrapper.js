@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import { useRef } from 'react';
 
 
-export let gsocket = '';
+export let socket = '';
 
 
 function SocketWrapper({ children }) {
@@ -42,20 +42,20 @@ function SocketWrapper({ children }) {
 
     useEffect(() => {
         if (!user) return;
-        if (!gsocket) {
-            const socket = io(`${process.env.NEXT_PUBLIC_Host_URL}`);
-            gsocket = socket
+        if (!socket) {
+            const gsocket = io(`${process.env.NEXT_PUBLIC_Host_URL}`);
+            socket = gsocket
         }
-        gsocket.on("connect", (id) => {
+        socket.on("connect", (id) => {
             console.log("connected")
-            gsocket.emit("setup", user._id);
+            socket.emit("setup", user._id);
         })
 
 
-        gsocket.on("message received", appendMsg)
+        socket.on("message received", appendMsg)
         return () => {
-            gsocket.off("connect");
-            gsocket.off("message received")
+            socket.off("connect");
+            socket.off("message received")
         }
     }, [user])
 
