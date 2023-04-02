@@ -13,6 +13,15 @@ router.post("/", authuser, async (req, res) => {// send existing chat if availab
     if (user_id) {
       try {
 
+        const chatExists = await Chat.exists({
+          $and: [
+            { users: { $all: [user1Id, user2Id] } },
+            { users: { $size: 2 } }
+          ]
+        });
+
+
+
         const newChat = new Chat({
           users: [req.user._id, user_id]
         });
