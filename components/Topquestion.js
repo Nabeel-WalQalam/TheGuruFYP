@@ -15,7 +15,9 @@ import {
 import { AiFillLike } from "react-icons/ai";
 import { RiMessage3Fill } from "react-icons/ri";
 import { ViewIcon } from "@chakra-ui/icons";
+import Link from "next/link";
 export const Topquestion = ({ questions }) => {
+  console.log(questions);
   return (
     <>
       {questions
@@ -34,9 +36,16 @@ export const Topquestion = ({ questions }) => {
                 // border={"1px"}
                 direction="column"
               >
-                <Heading size={"md"} color="#635DFF">
-                  {data.title}
-                </Heading>
+                <Link href={`/question/${data._id}`}>
+                  <Heading
+                    cursor={"pointer"}
+                    _hover={{ textDecoration: "underline", cursor: "pointer" }}
+                    size={"md"}
+                    color="#635DFF"
+                  >
+                    {data.title ? data.title : ""}
+                  </Heading>
+                </Link>
 
                 <Stack my={"0.7rem"} mr="1rem" direction="row">
                   {data.tags
@@ -56,7 +65,7 @@ export const Topquestion = ({ questions }) => {
                     alt="Dan Abramov"
                   />{" "}
                   <Box fontWeight={"sm"} mx="4px">
-                    hunfa Jalil
+                    {data.user[0].name ? data.user[0].name : ""}
                   </Box>
                 </Box>
               </Flex>
@@ -74,8 +83,9 @@ export const Topquestion = ({ questions }) => {
                   flexDirection={"column"}
                   alignItems="center"
                   mx={"0.5rem"}
+                  cursor="pointer"
                 >
-                  <Text>100</Text>
+                  <Text>{data.votes ? data.votes : 0}</Text>
                   <Text>Votes</Text>
                   <AiFillLike fill="#635DFF" />
                   {/* <Image>xyz</Image> */}
@@ -83,6 +93,7 @@ export const Topquestion = ({ questions }) => {
                 {/* <Divider orientation="vertical" ></Divider> */}
 
                 <Box
+                  cursor="pointer"
                   // border={"1px"}
                   className="sideIcon"
                   display="flex"
@@ -94,12 +105,13 @@ export const Topquestion = ({ questions }) => {
                   alignItems="center"
                   mx={"0.9rem"}
                 >
-                  <Text>200</Text>
+                  <Text>{data.views.count ? data.views.count : 0}</Text>
                   <Text>Views</Text>
                   {/* <Image>xyz</Image> */}
                   <ViewIcon />
                 </Box>
                 <Box
+                  cursor="pointer"
                   className="sideIcon"
                   // border={"1px"}
                   display="flex"
@@ -111,7 +123,7 @@ export const Topquestion = ({ questions }) => {
                   alignItems="center"
                   mx={"0.5rem"}
                 >
-                  <Text>10</Text>
+                  <Text>{data.answers ? data.answers : 0}</Text>
                   <Text>Answers</Text>
                   <RiMessage3Fill fill="#635DFF" />
                   {/* <Image>xyz</Image> */}
