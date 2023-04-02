@@ -3,9 +3,6 @@ import "../styles/globals.css";
 import theme from "../theme.js";
 import { Box, ChakraProvider, Flex, Text, Spinner } from "@chakra-ui/react";
 import SideBar from "../components/sidebar/SideBar";
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
-import { useRouter } from "next/router";
 import store from "../redux/store";
 import { Provider, useDispatch } from "react-redux";
 import axios from "axios";
@@ -20,28 +17,6 @@ function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
   // let Loading = false;
   const reduxStore = store.getState((state => state))
-
-  const router = useRouter();
-  useEffect(() => {
-    NProgress.configure({ showSpinner: false });
-    const handleStart = (url) => {
-      NProgress.start();
-    };
-
-    const handleStop = () => {
-      NProgress.done();
-    };
-
-    router.events.on("routeChangeStart", handleStart);
-    router.events.on("routeChangeComplete", handleStop);
-    router.events.on("routeChangeError", handleStop);
-
-    return () => {
-      router.events.off("routeChangeStart", handleStart);
-      router.events.off("routeChangeComplete", handleStop);
-      router.events.off("routeChangeError", handleStop);
-    };
-  }, [router]);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
