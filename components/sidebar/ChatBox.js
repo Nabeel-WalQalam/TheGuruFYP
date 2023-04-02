@@ -25,7 +25,7 @@ import axios from "axios";
 import React from "react";
 import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES } from "../../redux/reducers/chat-reducer";
+import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from "../../redux/reducers/chat-reducer";
 import { socket } from "../../redux/reducers/socket-reducer";
 import { gsocket } from "../socketWrapper";
 
@@ -62,7 +62,16 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
 
                     }
                     dispatch(APPEND_ACTIVE_CHAT_MESSAGES({ message: msg }))
+                    const newState = chatsList.map(element => {
 
+                        if (element._id === msg.chat) {
+                            return { ...element, latestMessage: { messege: msg.messege, createdAt: msg.createdAt } }
+
+                        }
+
+                        return element
+                    });
+                    dispatch(SET_CHATS_LIST({ chats: newState }))
 
                     if (gsocket.connected) {
 
@@ -166,7 +175,7 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                         flexDirection="column"
                         p="3"
                     >
-                        {activeChatMessages?.map((msg, i) => {
+                        {user && activeChatMessages?.map((msg, i) => {
 
                             if (user._id === msg.sender._id) {
 

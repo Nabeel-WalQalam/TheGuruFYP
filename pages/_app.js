@@ -19,6 +19,7 @@ import SocketWrapper from "../components/socketWrapper";
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
   // let Loading = false;
+  const reduxStore = store.getState((state => state))
 
   const router = useRouter();
   useEffect(() => {
@@ -112,7 +113,7 @@ function MyApp({ Component, pageProps }) {
           <Provider store={store}>
             <SocketWrapper>
               <Navbar />
-              <SideBar />
+              {reduxStore.userReducer.currentUser && <SideBar />}
               <Component {...pageProps} />
             </SocketWrapper>
           </Provider>
