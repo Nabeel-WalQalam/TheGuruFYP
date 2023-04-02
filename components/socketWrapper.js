@@ -41,21 +41,23 @@ function SocketWrapper({ children }) {
     }
 
     useEffect(() => {
+
         if (!user) return;
-        if (!socket) {
-            const gsocket = io(`${process.env.NEXT_PUBLIC_Host_URL}`);
-            socket = gsocket
-        }
+        const gsocket = io(`${process.env.NEXT_PUBLIC_Host_URL}`);
+        socket = gsocket
+
         socket.on("connect", (id) => {
             console.log("connected")
             socket.emit("setup", user._id);
         })
-
+        socket.on("disconnect", () => { console.log("disocnnected") })
 
         socket.on("message received", appendMsg)
         return () => {
             socket.off("connect");
             socket.off("message received")
+            socket.off("disconnect")
+            socket.disconnect()
         }
     }, [user])
 

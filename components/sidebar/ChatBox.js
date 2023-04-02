@@ -4,38 +4,33 @@ import {
     Flex,
     Text,
     Divider,
-    Button,
     Avatar,
     AvatarBadge,
     Input,
-    AvatarGroup,
     IconButton,
     useToast,
-    Center,
-    HStack,
-    Image,
-    Progress,
     VStack,
-    useMediaQuery,
-    useColorMode,
-    useColorModeValue,
-    border,
+    HStack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from "../../redux/reducers/chat-reducer";
+import { APPEND_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from "../../redux/reducers/chat-reducer";
+import { AiOutlineSend } from "react-icons/ai";
 import { socket } from "../socketWrapper";
+import LoadingBar from 'react-top-loading-bar'
 
 function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
     const { chatsList, activeChat, activeChatMessages } = useSelector(
         (state) => state.chatReducer
     );
     const dispatch = useDispatch()
+    const [progress2, setProgress2] = useState(0)
     const toast = useToast()
     const user = useSelector((state) => state.userReducer.currentUser);
-    const msgfield = useRef('')
+    const msgfield = useRef()
+
 
 
     const AlwaysScrollToBottom = () => {
@@ -45,13 +40,17 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
     };
 
     const sendMsg = (e) => {
+
+
         const msg = msgfield.current.value;
         if (msg.length === 0) return;
-
+        msgfield.current.disabled = true;
+        setProgress2(20);
         axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/sendmsg`, { chat_id: activeChat._id, msg }, { headers: { token: localStorage.getItem("token") } })
             .then(res => {
                 // console.log(res.data)
                 if (res.data.success) {
+                    setProgress2(60);
                     const msg = {
                         chat: res.data.payload.chat._id,
                         createdAt: res.data.payload.createdAt,
@@ -61,6 +60,7 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
 
                     }
                     dispatch(APPEND_ACTIVE_CHAT_MESSAGES({ message: msg }))
+                    setProgress2(90);
                     const newState = chatsList.map(element => {
 
                         if (element._id === msg.chat) {
@@ -72,10 +72,11 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                     });
                     dispatch(SET_CHATS_LIST({ chats: newState }))
 
+                    setProgress2(100);
+                    msgfield.current.value = "";
                     if (socket.connected) {
 
                         socket.emit("new message", res.data.payload);
-
 
                     }
                     else {
@@ -98,7 +99,7 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                 });
             })
 
-        msgfield.current.value = "";
+
 
 
 
@@ -229,38 +230,51 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                             }
                         })}
                         <AlwaysScrollToBottom />
+
                     </Flex>
 
                     <Box h="35px" p={"0px"}>
-                        <Flex w="100%" justifyContent={"space-between"} h="100%">
-                            <Input
-                                autoComplete="off"
-                                h="100%"
-                                flexBasis={"84%"}
-                                placeholder="Type Something..."
-                                variant={"filled"}
-                                border={"none"}
-                                borderRadius="8px"
-                                _focus={{
-                                    bg: "gray.200",
-                                }}
-                                _hover={{
-                                    bg: "gray.200",
-                                }}
-                                id="msgInput"
-                                ref={msgfield}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter')
-                                        sendMsg(e)
-                                }}
-                            />
+                        <Flex w="100%" justifyContent={"space-between"} h="100%" >
+                            <VStack position='relative' spacing={0} flexBasis="84%" h="47px">
+                                <LoadingBar
 
-                            <Box w="8px"></Box>
+                                    color='#635dff'
+                                    waitingTime="100"
+                                    // loaderSpeed="1000"
+                                    progress={progress2}
+                                    containerStyle={{
+                                        position: 'absolute', width: "98%", borderRadius: "50px",
 
-                            <Box w="8px"></Box>
-                            <Button h="100%" colorScheme={"guru"} borderRadius="8px" onClick={sendMsg}>
-                                Send
-                            </Button>
+                                        visibility: progress2 === 0 ? "hidden" : "",
+                                        marginLeft: "4px"
+                                    }}
+                                    onLoaderFinished={() => { setProgress2(0); msgfield.current.disabled = false; msgfield.current.focus(); }}
+                                />
+                                <Input
+
+                                    autoComplete="off"
+
+                                    flexBasis={"84%"}
+                                    placeholder="Type Something..."
+                                    variant={"filled"}
+                                    border={"none"}
+                                    borderRadius="8px"
+                                    _focus={{
+                                        bg: "gray.200",
+                                    }}
+                                    _hover={{
+                                        bg: "gray.200",
+                                    }}
+                                    id="msgInput"
+                                    ref={msgfield}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter')
+                                            sendMsg(e)
+                                    }}
+                                />
+                            </VStack>
+
+                            <IconButton icon={<AiOutlineSend />} isDisabled={progress2 !== 0} colorScheme={"guru"} borderRadius="8px" onClick={sendMsg} />
                         </Flex>
                     </Box>
                 </>

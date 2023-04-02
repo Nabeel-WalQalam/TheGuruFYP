@@ -68,7 +68,7 @@ function getAllConnectedClients(roomId) {
 }
 
 io.on("connection", (socket) => {
-  // console.log("a user connected", socket.id);
+  console.log("a user connected", socket.id);
 
   socket.on("setup", (user_id) => {
     console.log("setup");

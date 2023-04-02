@@ -42,6 +42,7 @@ import { useRouter } from "next/router";
 import { setCurrentUser } from "../redux/reducers/user-reducer";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { socket } from "./socketWrapper";
 function Navbar() {
   const Router = useRouter();
   const toast = useToast();
@@ -121,6 +122,7 @@ function Navbar() {
       isClosable: true,
     });
     localStorage.clear();
+    socket.disconnect();
     Router.push("/");
   };
 
