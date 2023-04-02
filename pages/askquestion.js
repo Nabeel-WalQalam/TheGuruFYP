@@ -31,16 +31,16 @@ function Askquestion() {
   const Router = useRouter();
   // console.log("quill ", quillText, "Title", title.current.value);
   // console.log(tags);
-  const user = useSelector(setCurrentUser);
+  // const user = useSelector(setCurrentUser);
+  const user = useSelector((state) => state.userReducer.currentUser);
   // console.log(user.payload.userReducer.currentUser.user.email);
-  // console.log("hi", user);
 
   const submitQuestion = async () => {
     setdiableButton(true);
     axios
       .post(`${process.env.NEXT_PUBLIC_Host_URL}api/postQuestion`, {
-        id: user.payload.userReducer.currentUser.user._id,
-        email: user.payload.userReducer.currentUser.user.email,
+        id: user._id,
+        email: user.email,
         title: title.current.value,
         description: quillText,
         tag: tags,
@@ -74,7 +74,7 @@ function Askquestion() {
 
   return (
     <>
-      {user.payload.userReducer.currentUser ? (
+      {user ? (
         <>
           <Flex
             //  border="2px solid red"

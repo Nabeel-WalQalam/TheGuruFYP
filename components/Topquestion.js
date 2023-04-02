@@ -17,7 +17,7 @@ import { RiMessage3Fill } from "react-icons/ri";
 import { ViewIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 export const Topquestion = ({ questions }) => {
-  console.log(questions);
+  // console.log("12", questions);
   return (
     <>
       {questions

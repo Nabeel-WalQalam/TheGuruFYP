@@ -16,8 +16,10 @@ const accessChat = require("./routes/accessChat");
 const searchuser = require("./routes/searchuser");
 const creategroupchat = require("./routes/creategroupchat");
 const postQuestion = require("./routes/postQuestion");
+const postAnswer = require("./routes/postAnswer");
 const verifyToken = require("./routes/verifyToken");
 const getAllQuestions = require("./routes/getQuestions");
+const getAllAnswer = require("./routes/getAllUserAnswer");
 const Chat = require("./database/Models/chatModel");
 const path = require("path");
 
@@ -34,22 +36,23 @@ app.use("/api/signup", createuser);
 app.use("/api/loginuser", loginuser);
 app.use("/api/verifytoken", verifyToken);
 app.use("/api/postQuestion", postQuestion);
+app.use("/api/postAnswer", postAnswer);
 // api/postQuestion
 //get Request
 app.use("/api/getAllQuestion", getAllQuestions);
+app.use("/api/getAllAnswer", getAllAnswer);
 app.use("/api/searchuser", searchuser);
 app.use("/api/accessChat", accessChat);
 app.use("/api/getallchats", getallchats);
 app.use("/api/fetchmessages", fetchmessages);
 app.use("/api/sendmsg", sendmsg);
 
-
 const server = http.createServer(app);
 const userSocketMap = {};
 const io = new Server(server, {
   cors: {
     origin: "*",
-  }
+  },
 });
 
 function getAllConnectedClients(roomId) {
@@ -65,35 +68,28 @@ function getAllConnectedClients(roomId) {
 }
 
 io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
-
+  // console.log("a user connected", socket.id);
 
   socket.on("setup", (user_id) => {
-    console.log("setup")
+    console.log("setup");
     socket.join(user_id);
     // let [temp,rooms]=socket.rooms
     // console.log(rooms)
-    socket.emit("user joined the room", { user_id, onlineUsers: socket.onlineUsers });
+    socket.emit("user joined the room", {
+      user_id,
+      onlineUsers: socket.onlineUsers,
+    });
     socket.broadcast.emit("i am online", user_id);
-
   });
 
-
   socket.on("new message", (message) => {
-    console.log("new meesage")
+    console.log("new meesage");
     const chat = message.chat;
     chat.users.forEach((user) => {
       if (message.sender._id === user._id) return;
       socket.to(user._id).emit("message received", message);
-    })
-
+    });
   });
-
-
-
-
-
-
 
   socket.on("join", ({ roomId, username }) => {
     //get the username... to room

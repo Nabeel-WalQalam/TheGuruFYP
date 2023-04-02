@@ -34,12 +34,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Question = ({ questions }) => {
-  const user = useSelector(setCurrentUser);
+  const user = useSelector((state) => state.userReducer.currentUser);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log("data", questions);
+  console.log("data", user);
   return (
     <>
-      {questions.payload.data.length ? (
+      {questions.length ? (
         <>
           <Flex direction={"column"} align="center">
             <Flex
@@ -59,7 +59,7 @@ const Question = ({ questions }) => {
                 Top Questions
               </Heading>
 
-              {user.payload.userReducer.currentUser ? (
+              {user ? (
                 <Link href={"/askquestion"} legacyBehavior>
                   <a>
                     <Button colorScheme={"guru"}>Ask Question</Button>
@@ -133,22 +133,13 @@ const Question = ({ questions }) => {
 
               <TabPanels>
                 <TabPanel>
-                  <Topquestion questions={questions.payload.data} />
+                  <Topquestion questions={questions} />
                 </TabPanel>
 
-                <TabPanel>
+                {/* <TabPanel>
                   <Topquestion />
                   <Topquestion />
-                </TabPanel>
-
-                <TabPanel>
-                  <Topquestion />
-                </TabPanel>
-
-                <TabPanel>
-                  <Topquestion />
-                  <Topquestion />
-                </TabPanel>
+                </TabPanel> */}
               </TabPanels>
             </Tabs>
           </Flex>
@@ -183,7 +174,7 @@ export async function getServerSideProps(context) {
     );
     // console.log(response.data);
     return {
-      props: { questions: response.data },
+      props: { questions: response.data.payload.data },
     };
   } catch (error) {
     console.error(error);
