@@ -15,13 +15,11 @@ import SocketWrapper from "../components/socketWrapper";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
-  // let Loading = false;
   const reduxStore = store.getState((state => state))
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       let token = localStorage.getItem("token");
-      //   console.log(token);
       setLoading(true);
 
       axios
@@ -31,7 +29,6 @@ function MyApp({ Component, pageProps }) {
           },
         })
         .then((res) => {
-          //   console.log("response came 2", res);
           if (res.data.success) {
             store.dispatch(setCurrentUser(res.data.payload.user));
           } else {
