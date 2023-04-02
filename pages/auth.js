@@ -16,7 +16,6 @@ import { setCurrentUser } from "../redux/reducers/user-reducer";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/router";
-useRouter;
 
 function Auth() {
   const Router = useRouter();
@@ -48,7 +47,7 @@ function Auth() {
       container.classList.remove("right-panel-active");
     });
 
-    return () => { };
+    return () => {};
   }, []);
 
   //sumbit Sugn-Up data
@@ -68,7 +67,7 @@ function Auth() {
           button.click();
         } else {
           toast({
-            title: res.data.payload
+            title: res.data.payload,
           });
         }
       })
@@ -91,7 +90,7 @@ function Auth() {
         if (res.data.success) {
           toast({
             title: "Welcome To THE GURU",
-            status: "success"
+            status: "success",
           });
           reset();
           localStorage.setItem("token", res.data.payload.token);
@@ -99,7 +98,7 @@ function Auth() {
           Router.push("/");
         } else {
           toast({
-            title: res.data.payload
+            title: res.data.payload,
           });
         }
       })
