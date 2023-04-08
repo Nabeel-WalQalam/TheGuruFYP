@@ -8,7 +8,7 @@ module.exports = router;
 router.post("/", async (req, res) => {
   try {
     const q_id = req.body.qid;
-    console.log(q_id);
+    // console.log(q_id);
 
     let getAllAnswer = await userAnswers
       .find({ question_id: q_id })
@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
           // If there are no answers, retrieve the question separately
           return Questions.findById(q_id);
         } else {
-          console.log("Answers:", answers);
+          // console.log("Answers:", answers);
           // Send the answers to the client
           res.send({ success: true, payload: answers });
         }

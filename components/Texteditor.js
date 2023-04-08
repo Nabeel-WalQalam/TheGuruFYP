@@ -3,13 +3,17 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 
-export const Texteditor = ({ setText }) => {
+export const Texteditor = ({ setText, isposted }) => {
   const [value, setValue] = useState("");
   // console.log("quill", value);
 
   useEffect(() => {
     setText(value);
   }, [value]);
+
+  useEffect(() => {
+    setValue("");
+  }, [isposted]);
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"], // text formatting buttons

@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Collapse, Button } from "@chakra-ui/react";
 import { Answers } from "../components/Answer";
 import { BsFillSuitHeartFill } from "react-icons/bs";
@@ -32,11 +32,17 @@ export default function Home({ isPosted, question_id, Allanswer }) {
   // console.log(Allanswer.length);
   // console.log(user);
   const [quillText, setquillText] = useState("");
+  const [isposted, setisposted] = useState(false);
+  const [upVote, setupVote] = useState(false);
+  const [downVote, setdownVote] = useState(false);
+  const [disableVotes, setdisableVotes] = useState(false);
+
   const editHandler = () => {
     // console.log("Edit button");
   };
   const [show, setShow] = useState(false);
   const handleToggle = () => setShow(!show);
+
   // console.log(quillText);
 
   const handleSubmitAnswer = async () => {
@@ -57,7 +63,80 @@ export default function Home({ isPosted, question_id, Allanswer }) {
             duration: 3000,
             isClosable: true,
           });
-          setquillText("");
+          setisposted(true);
+          // setquillText("");
+          isPosted(true);
+
+          // Router.push("/");
+        } else {
+          toast({
+            title: response.data.payload,
+            status: "error",
+            position: "top-left",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  // console.log(user._id);
+
+  useEffect(() => {
+    if (Allanswer[0].question_id) {
+      console.log(Allanswer);
+      Allanswer[0].question_id.upVote.map((items) => {
+        if (items == user._id) {
+          // isPosted(true);
+          setupVote(true);
+        }
+      });
+      Allanswer[0].question_id.downVote.map((items) => {
+        if (items == user._id) {
+          // isPosted(true);
+          setdownVote(true);
+        }
+      });
+    }
+  }, [user]);
+
+  const handleupVote = async (question_key, text) => {
+    // console.log(question_id, text);
+    axios
+      .post(`${process.env.NEXT_PUBLIC_Host_URL}api/postUpVote`, {
+        qid: question_id,
+        text: text,
+        user: user,
+      })
+      .then(function (response) {
+        // console.log("res", response);
+        if (response.data.success) {
+          toast({
+            title: response.data.payload,
+            position: "top-left",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          if (text === "upVote") {
+            if (upVote) {
+              setupVote(false);
+            } else {
+              setupVote(true);
+              setdownVote(false);
+            }
+          } else {
+            if (downVote) {
+              setdownVote(false);
+            } else {
+              setdownVote(true);
+              setupVote(false);
+            }
+          }
+
+          // setquillText("");
           isPosted(true);
 
           // Router.push("/");
@@ -132,7 +211,9 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                   //  border={"1px black solid"}
                 >
                   <TimeIcon mr="2" />
-                  <Center display={"inline"}>{}</Center>
+                  <Center display={"inline"}>
+                    {new Date(Allanswer[0]?.post_date).toLocaleString()}
+                  </Center>
                 </Box>
               </Flex>
 
@@ -160,13 +241,31 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                   // mt={"4"}
                   height={"200px"}
                 >
-                  <ImArrowUp2 className="ArrowUp" />
+                  <Button variant={"none"} isDisabled={disableVotes}>
+                    <ImArrowUp2
+                      fontSize={"1.5rem"}
+                      fontWeight={"bold"}
+                      fill={upVote ? "purple" : "black"}
+                      onClick={() => handleupVote(Allanswer[0]._id, "upVote")}
+                      className="ArrowUp"
+                    />
+                  </Button>
                   <Text fontWeight={"semibold"}>
                     {Allanswer[0].question_id
-                      ? Allanswer[0].question_id.votes
-                      : 2}
+                      ? Allanswer[0].question_id.upVote.length -
+                        Allanswer[0].question_id.downVote.length
+                      : Allanswer[0].upVote.length -
+                        Allanswer[0].downVote.length}
                   </Text>
-                  <ImArrowDown2 className="ArrowUp" />
+                  <Button isDisabled={disableVotes} variant={"none"}>
+                    <ImArrowDown2
+                      fontSize={"1.5rem"}
+                      fontWeight={"bold"}
+                      fill={downVote ? "purple" : "black"}
+                      className="ArrowUp"
+                      onClick={() => handleupVote(Allanswer[0]._id, "downVote")}
+                    />
+                  </Button>
                   <BsFillSuitHeartFill
                     size={"25px"}
                     color="lightgray"
@@ -302,21 +401,38 @@ export default function Home({ isPosted, question_id, Allanswer }) {
         ? Allanswer.map((data) => (
             <Box key={data._id}>
               {}
-              <Answers Answers={data} />
+              <Answers isPosted={isPosted} Answers={data} />
             </Box>
           ))
         : ""}
-      <Heading size={"lg"} my={"10"} ml="9rem" color={"#635DFF"}>
-        Submit Your Answer
-      </Heading>
-      <Box my={"2rem"} w={"80%"} marginInline="auto">
-        <Texteditor setText={setquillText} />
-      </Box>
-      <Flex justify={"center"} w={"100%"} my={"2rem"}>
-        <Button onClick={handleSubmitAnswer} colorScheme="guru" width={"20%"}>
-          Submit
-        </Button>
-      </Flex>
+
+      {user ? (
+        <>
+          <Heading size={"lg"} my={"10"} ml="9rem" color={"#635DFF"}>
+            Submit Your Answer
+          </Heading>
+          <Box my={"2rem"} w={"80%"} marginInline="auto">
+            <Texteditor isposted={isposted} setText={setquillText} />
+          </Box>
+          <Flex justify={"center"} w={"100%"} my={"2rem"}>
+            <Button
+              onClick={handleSubmitAnswer}
+              colorScheme="guru"
+              width={"20%"}
+            >
+              Submit
+            </Button>
+          </Flex>
+        </>
+      ) : (
+        <>
+          <Flex justify={"center"} align={"center"}>
+            <Text fontSize={"2rem"} color={"#153A5B"}>
+              Login First to Answer
+            </Text>
+          </Flex>
+        </>
+      )}
     </>
   );
 }

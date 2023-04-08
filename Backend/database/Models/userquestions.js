@@ -5,11 +5,19 @@ const userQuestionsSchema = new mongoose.Schema({
   description: { type: String, required: true },
   tags: [],
   user: Object,
-  votes: { type: Number, default: 0 },
+  upVote: {
+    type: [String],
+    default: [],
+  },
+  downVote: {
+    type: [String],
+    default: [],
+  },
   commet_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "comments",
   },
+  post_date: { type: Date, default: Date.now() },
   views: {
     userslist: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     count: { type: Number, default: 0 },

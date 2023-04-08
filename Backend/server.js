@@ -17,6 +17,9 @@ const searchuser = require("./routes/searchuser");
 const creategroupchat = require("./routes/creategroupchat");
 const postQuestion = require("./routes/postQuestion");
 const postAnswer = require("./routes/postAnswer");
+const postComment = require("./routes/postComment");
+const postUpVote = require("./routes/postUpVote");
+const postAnswerVote = require("./routes/postAnswerVote");
 const verifyToken = require("./routes/verifyToken");
 const getAllQuestions = require("./routes/getQuestions");
 const getAllAnswer = require("./routes/getAllUserAnswer");
@@ -37,6 +40,10 @@ app.use("/api/loginuser", loginuser);
 app.use("/api/verifytoken", verifyToken);
 app.use("/api/postQuestion", postQuestion);
 app.use("/api/postAnswer", postAnswer);
+app.use("/api/postComment", postComment);
+app.use("/api/postUpVote", postUpVote);
+app.use("/api/postAnswerVote", postAnswerVote);
+
 // api/postQuestion
 //get Request
 app.use("/api/getAllQuestion", getAllQuestions);

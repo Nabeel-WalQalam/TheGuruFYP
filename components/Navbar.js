@@ -74,9 +74,7 @@ function Navbar() {
     };
   }, [Router]);
 
-
   useEffect(() => {
-
     let handler = (e) => {
       if (navbar_search.current)
         if (!navbar_search.current.contains(e.target)) {
@@ -189,6 +187,15 @@ function Navbar() {
               //  boxShadow={"none"}
               py="5"
             >
+              <Link href={"/askquestion"}>
+                <MenuItem
+                  my="5px"
+                  fontWeight={"semibold"}
+                  icon={<HiCode size={"18px"} color="#635dff" />}
+                >
+                  Ask a Question
+                </MenuItem>
+              </Link>
               <Link href={"/topquestion"} legacyBehavior>
                 <a>
                   <MenuItem
@@ -321,9 +328,7 @@ function Navbar() {
                     src="#"
                   />
                   <Stack direction={"column"} spacing={0} fontSize={"sm"}>
-                    <Text fontWeight={600}>
-                      {user ? user.name : "User"}
-                    </Text>
+                    <Text fontWeight={600}>{user ? user.name : "User"}</Text>
                   </Stack>
                 </Stack>
                 <Box mx={"0.8rem"}></Box>

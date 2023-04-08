@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Question from "../../components/Question";
+import { Spinner, Text, Flex } from "@chakra-ui/react";
 
 const Slug = () => {
   const router = useRouter();
@@ -57,7 +58,18 @@ const Slug = () => {
           question_id={slug}
         />
       ) : (
-        "No Question Found"
+        <>
+          <Flex
+            direction={"column"}
+            width={"100%"}
+            height="100vh"
+            justify={"center"}
+            align="center"
+          >
+            <Spinner size="xl" thickness="15px" />
+            <Text>Loading</Text>
+          </Flex>
+        </>
       )}
     </>
   );

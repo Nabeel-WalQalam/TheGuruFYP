@@ -17,7 +17,7 @@ import { RiMessage3Fill } from "react-icons/ri";
 import { ViewIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 export const Topquestion = ({ questions }) => {
-  // console.log("12", questions);
+  console.log("12", questions);
   return (
     <>
       {questions
@@ -85,7 +85,9 @@ export const Topquestion = ({ questions }) => {
                   mx={"0.5rem"}
                   cursor="pointer"
                 >
-                  <Text>{data.votes ? data.votes : 0}</Text>
+                  <Text>
+                    {data ? data.upVote.length - data.downVote.length : 0}
+                  </Text>
                   <Text>Votes</Text>
                   <AiFillLike fill="#635DFF" />
                   {/* <Image>xyz</Image> */}
