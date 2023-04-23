@@ -16,10 +16,12 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { APPEND_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from "../../redux/reducers/chat-reducer";
+import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from "../../redux/reducers/chat-reducer";
 import { AiOutlineSend } from "react-icons/ai";
 import { socket } from "../socketWrapper";
 import LoadingBar from 'react-top-loading-bar'
+import getTime from "../../utils/getTime";
+import Loader from "../../Loader";
 
 function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
     const { chatsList, activeChat, activeChatMessages } = useSelector(
@@ -29,6 +31,7 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
     const [progress2, setProgress2] = useState(0)
     const toast = useToast()
     const user = useSelector((state) => state.userReducer.currentUser);
+    const apiLoading = useSelector(state => state.chatReducer.apiLoading)
     const msgfield = useRef()
 
 
@@ -106,25 +109,6 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
 
 
     }
-    function tConvert(time) {
-        // Check correct time format and split into components
-        time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-
-        if (time.length > 1) { // If time format correct
-            time = time.slice(1);  // Remove full string match value
-            time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
-            time[0] = +time[0] % 12 || 12; // Adjust hours
-        }
-        return time.join(''); // return adjusted time or original string
-    }
-
-    const gettime = (time) => {
-        let t = tConvert(new Date(time).toLocaleTimeString())
-        let [h, m, s] = t.split(":")
-        let [se, p] = s.split(" ")
-        let ti = h + ":" + m + " " + p;
-        return ti;
-    }
 
     return (
         <Box
@@ -138,6 +122,8 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
             <CloseButton
                 onClick={() => {
                     onToggle(), setopenChatbox(false);
+                    dispatch(SET_ACTIVE_CHAT_MESSAGES([]))
+                    dispatch(SET_ACTIVE_CHAT({ chat: null }))
                 }}
                 size="md"
                 position={"absolute"}
@@ -174,62 +160,73 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                         overflowY="auto"
                         flexDirection="column"
                         p="3"
+
                     >
-                        {user && activeChatMessages?.map((msg, i) => {
+                        {apiLoading ?
+                            <Box h={"100%"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+                                <Loader />
+                            </Box>
+                            :
 
-                            if (user._id === msg.sender._id) {
+                            user && activeChatMessages?.map((msg, i) => {
 
-                                return (
-                                    <Flex w="100%" justify="flex-end" key={i}>
-                                        <Flex
-                                            flexDirection={"column"}
-                                            position="relative"
-                                            bg="guru.500"
-                                            color="white"
-                                            minW="100px"
-                                            maxW="350px"
-                                            borderRadius={"8px"}
-                                            my="1"
-                                            // p="3"
-                                            px={"3"}
-                                            pt="1"
-                                        >
-                                            <Text>{msg.messege}</Text>
-                                            <Text alignSelf={"end"} fontSize={["10px", "12px"]}>
-                                                {gettime(msg.createdAt)}
-                                            </Text>
+                                if (user._id === msg.sender._id) {
+
+                                    return (
+                                        <Flex w="100%" justify="flex-end" key={i}>
+                                            <Flex
+                                                flexDirection={"column"}
+                                                position="relative"
+                                                bg="guru.500"
+                                                color="white"
+                                                minW="100px"
+                                                maxW="350px"
+                                                borderRadius={"8px"}
+                                                my="1"
+                                                // p="3"
+                                                px={"3"}
+                                                pt="1"
+                                            >
+                                                <Text>{msg.messege}</Text>
+                                                <Text alignSelf={"end"} fontSize={["10px", "12px"]}>
+                                                    {getTime(msg.createdAt)}
+                                                </Text>
+                                            </Flex>
                                         </Flex>
-                                    </Flex>
-                                );
-                            } else {
-                                return (
-                                    <Flex w="100%" key={i}>
-                                        <Avatar name="hunfa" size={"sm"}>
-                                            {" "}
-                                        </Avatar>
+                                    );
+                                } else {
+                                    return (
+                                        <Flex w="100%" key={i}>
+                                            <Avatar name="hunfa" size={"sm"}>
+                                                {" "}
+                                            </Avatar>
 
-                                        <Flex
-                                            ml={"5px"}
-                                            flexDirection={"column"}
-                                            bg="gray.100"
-                                            color="black"
-                                            borderRadius={"8px"}
-                                            minW="100px"
-                                            maxW="350px"
-                                            px={"3"}
-                                            pt={1}
-                                            my="1"
-                                        >
-                                            <Text>{msg.messege}</Text>
-                                            <Text alignSelf={"end"} fontSize={["10px", "12px"]}>
-                                                {gettime(msg.createdAt)}
-                                            </Text>
+                                            <Flex
+                                                ml={"5px"}
+                                                flexDirection={"column"}
+                                                bg="gray.100"
+                                                color="black"
+                                                borderRadius={"8px"}
+                                                minW="100px"
+                                                maxW="350px"
+                                                px={"3"}
+                                                pt={1}
+                                                my="1"
+                                            >
+                                                <Text>{msg.messege}</Text>
+                                                <Text alignSelf={"end"} fontSize={["10px", "12px"]}>
+                                                    {gettime(msg.createdAt)}
+                                                </Text>
+                                            </Flex>
                                         </Flex>
-                                    </Flex>
-                                );
-                            }
-                        })}
-                        <AlwaysScrollToBottom />
+                                    );
+                                }
+                            })
+
+                        }
+
+                        < AlwaysScrollToBottom />
+
 
                     </Flex>
 
@@ -279,6 +276,9 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                     </Box>
                 </>
             </Box>
+
+
+
         </Box>
     );
 }

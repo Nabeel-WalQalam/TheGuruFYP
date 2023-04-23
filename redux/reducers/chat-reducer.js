@@ -8,7 +8,7 @@ export const chatReducer = createSlice({
         activeChat: null,
         activeChatMessages: [],
         showMobileDetail: false,
-        apiLoading: true,
+        apiLoading: false,
 
     },
     reducers: {
@@ -65,6 +65,7 @@ export const { SET_API_LOADING, UPDATE_CHAT_BADGE, ADD_NEW_CHAT, APPEND_ACTIVE_C
 
 
 export const fetchMessages = (payload) => (dispatch) => {
+    dispatch(SET_API_LOADING(true))
     const chat_id = payload.chat_id
     const token = localStorage.getItem("token");
     axios.get(`${process.env.NEXT_PUBLIC_Host_URL}api/fetchmessages`, { headers: { token: token, chat_id } })
@@ -73,7 +74,7 @@ export const fetchMessages = (payload) => (dispatch) => {
             // console.log(res);
             if (res.data.success) {
                 dispatch(SET_ACTIVE_CHAT_MESSAGES({ messages: res.data.payload }))
-
+                dispatch(SET_API_LOADING(false))
             }
             else {
                 console.log("failed")

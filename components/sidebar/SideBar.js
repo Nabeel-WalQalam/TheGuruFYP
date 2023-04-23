@@ -89,7 +89,7 @@ function SideBar() {
         {chatsList.map((chat) => {
           return (
             <Box key={chat._id}>
-              <MyChats setopenChatbox={setopenChatbox} setselectedChat={setselectedChat} name={chat.users[0].name} chat={chat} />
+              <MyChats setopenChatbox={setopenChatbox} setselectedChat={setselectedChat} name={chat.users[0].name} chat={chat} activeChat={activeChat} />
             </Box>
           )
         })}

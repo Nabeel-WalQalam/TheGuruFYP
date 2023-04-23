@@ -3,8 +3,9 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Box, Text, Divider, Icon, HStack, Badge, Avatar } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMessages, SET_ACTIVE_CHAT } from '../../redux/reducers/chat-reducer'
+import gettime from '../../utils/getTime'
 
-function MyChats({ setselectedChat, setopenChatbox, name, chat }) {
+function MyChats({ setopenChatbox, name, chat, activeChat }) {
 
   const dispatch = useDispatch()
   const user = useSelector((state) => state.userReducer.currentUser)
@@ -23,7 +24,6 @@ function MyChats({ setselectedChat, setopenChatbox, name, chat }) {
     dispatch(SET_ACTIVE_CHAT({ chat: chat }));
     dispatch(fetchMessages({ chat_id: chat._id }))
   }
-
   const sliceLatestmsg = (msg) => {
     return msg.slice(0, 24)
   }
@@ -33,12 +33,11 @@ function MyChats({ setselectedChat, setopenChatbox, name, chat }) {
 
       <Box cursor={"pointer"}
         onClick={() => { handleClick() }}
-        // onClick={() => _setselectedChat(chat._id)}
-        //  backgroundColor={selectedChat===chat._id? "#0078FF":""}
-        //  color={selectedChat===chat._id?"white":""}
+        backgroundColor={activeChat?._id === chat._id && "#635dff"}
+        color={activeChat?._id === chat._id ? "white" : ""}
         _hover={{
-          // bgColor:selectedChat===chat._id?"":"blue.100",
-          boxShadow: "0px 0px 10px 0px #888888",
+          bgColor: activeChat?._id === chat._id ? "" : "guru.100",
+          // boxShadow: "0px 0px 10px 0px #635dff",
 
 
         }}
@@ -66,7 +65,7 @@ function MyChats({ setselectedChat, setopenChatbox, name, chat }) {
               {/* {
                       chat.latestMessage?
                       gettime(chat.latestMessage.createdAt):<Text visibility={"hidden"}>6:20 pm</Text>} */}
-              {date}
+              {gettime(chat.latestMessage.createdAt)}
             </Text>
 
 
