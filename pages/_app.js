@@ -9,13 +9,12 @@ import axios from "axios";
 
 import { setCurrentUser } from "../redux/reducers/user-reducer";
 
-
 import React, { useEffect, useState } from "react";
 import SocketWrapper from "../components/socketWrapper";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
-  const reduxStore = store.getState((state => state))
+  const reduxStore = store.getState((state) => state);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -58,7 +57,16 @@ function MyApp({ Component, pageProps }) {
           <Text>Loading</Text>
         </Flex>
       ) : (
-        <ChakraProvider theme={theme} toastOptions={{ defaultOptions: { status: "error", duration: 5000, isClosable: true } }}>
+        <ChakraProvider
+          theme={theme}
+          toastOptions={{
+            defaultOptions: {
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            },
+          }}
+        >
           <Provider store={store}>
             <SocketWrapper>
               <Navbar />

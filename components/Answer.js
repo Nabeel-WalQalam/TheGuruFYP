@@ -24,6 +24,14 @@ import {
   PopoverCloseButton,
   PopoverAnchor,
   Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { userReducer } from "../redux/reducers/user-reducer";
@@ -44,6 +52,7 @@ export const Answers = ({ Answers, isPosted }) => {
   const [upVote, setupVote] = useState(false);
   const [downVote, setdownVote] = useState(false);
   const [disableVotes, setdisableVotes] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     // console.log(Answers);
@@ -64,6 +73,9 @@ export const Answers = ({ Answers, isPosted }) => {
   }, [Answers, user]);
 
   const handleComment = async (key) => {
+    if (!comment.current.value) {
+      return;
+    }
     console.log(key);
     setdisable(true);
 
@@ -87,6 +99,7 @@ export const Answers = ({ Answers, isPosted }) => {
           setdisable(false);
           isPosted(true);
           comment.current.value = "";
+          onClose();
           // Router.push("/");
         } else {
           toast({
@@ -314,30 +327,42 @@ export const Answers = ({ Answers, isPosted }) => {
               borderRadius={"5"}
             >
               <BsFillReplyFill fill="white" />
-              <Popover>
-                <PopoverTrigger>
-                  <Text color={"white"} cursor={"pointer"}>
-                    Comment
-                  </Text>
-                </PopoverTrigger>
-                <PopoverContent left={"23rem"} top={"-3rem"} w={"600px"}>
-                  <PopoverArrow />
-                  <PopoverCloseButton />
-                  {/* <PopoverHeader>Write your!</PopoverHeader> */}
-                  <PopoverBody>
-                    <Flex>
+
+              <Button
+                variant={"none"}
+                border={"none"}
+                color={"white"}
+                onClick={onOpen}
+              >
+                Add Comment
+              </Button>
+
+              <Modal size={"lg"} isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Modal Title</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Flex justify={"center"} direction={"column"}>
                       <Input ref={comment} type="text" />
                       <Button
                         isDisabled={disable}
+                        mt={"1rem"}
                         onClick={() => handleComment(Answers._id)}
                         colorScheme="guru"
                       >
                         Add Comment
                       </Button>
                     </Flex>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
+                  </ModalBody>
+
+                  <ModalFooter>
+                    <Button colorScheme="blue" mr={3} onClick={onClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </Box>
           </Flex>
           {/* <Box

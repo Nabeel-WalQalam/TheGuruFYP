@@ -16,6 +16,13 @@ import {
   Heading,
   Divider,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useSelector } from "react-redux";
