@@ -36,8 +36,11 @@ export const chatReducer = createSlice({
         },
 
         UPDATE_CHAT_BADGE: (state, action) => {
+            console.log("in reducer")
             const newList = state.chatsList.map((chat) => {
                 if (chat._id === action.payload.chat_id) {
+                    console.log("found")
+
                     if (action.payload.badge === 0) // update badge value to Zero
                         return { ...chat, badge: 0 }
                     else // increment badge value by 1

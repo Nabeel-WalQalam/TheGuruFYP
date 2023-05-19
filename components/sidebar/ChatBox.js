@@ -215,7 +215,7 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                                             >
                                                 <Text>{msg.messege}</Text>
                                                 <Text alignSelf={"end"} fontSize={["10px", "12px"]}>
-                                                    {gettime(msg.createdAt)}
+                                                    {getTime(msg.createdAt)}
                                                 </Text>
                                             </Flex>
                                         </Flex>

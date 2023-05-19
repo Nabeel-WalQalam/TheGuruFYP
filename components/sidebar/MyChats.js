@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Box, Text, Divider, Icon, HStack, Badge, Avatar } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchMessages, SET_ACTIVE_CHAT } from '../../redux/reducers/chat-reducer'
+import { fetchMessages, SET_ACTIVE_CHAT,UPDATE_CHAT_BADGE } from '../../redux/reducers/chat-reducer'
 import gettime from '../../utils/getTime'
 
 function MyChats({ setopenChatbox, name, chat, activeChat }) {
@@ -23,10 +23,12 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
     setopenChatbox(true);
     dispatch(SET_ACTIVE_CHAT({ chat: chat }));
     dispatch(fetchMessages({ chat_id: chat._id }))
+    dispatch(UPDATE_CHAT_BADGE({chat_id:chat._id,badge:0}))
   }
   const sliceLatestmsg = (msg) => {
     return msg.slice(0, 24)
   }
+  console.log(chat)
   return (
     <>
 
@@ -65,7 +67,7 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
               {/* {
                       chat.latestMessage?
                       gettime(chat.latestMessage.createdAt):<Text visibility={"hidden"}>6:20 pm</Text>} */}
-              {gettime(chat.latestMessage.createdAt)}
+              { chat?.latestMessage ?  gettime(chat?.latestMessage?.createdAt):""}
             </Text>
 
 
@@ -79,8 +81,8 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
                 {/* {chat.isGroupChat? chat.chatName:chat.users[0].name} */}
               </Text></Box>
               <Box   ><Badge px={"10px"} textAlign={"center"} borderRadius={"7px"} colorScheme='red'>
-                {/* {chat.unReadmessages>0?chat.unReadmessages:""} */}
-                10
+                {chat.badge>0?chat.badge:""}
+                
               </Badge></Box>
 
 

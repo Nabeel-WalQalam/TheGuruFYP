@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { APPEND_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from '../redux/reducers/chat-reducer';
+import { APPEND_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST,UPDATE_CHAT_BADGE } from '../redux/reducers/chat-reducer';
 import io from "socket.io-client";
 import { useRef } from 'react';
 
@@ -24,7 +24,7 @@ function SocketWrapper({ children }) {
 
 
     const appendMsg = (msg) => {
-        if (msg.chat._id === activeChatRef.current._id) {//
+        if (msg.chat._id === activeChatRef?.current?._id) {//
 
             dispatch(APPEND_ACTIVE_CHAT_MESSAGES({ message: msg }))
             const newState = chatsList.map(element => {
@@ -36,8 +36,10 @@ function SocketWrapper({ children }) {
 
                 return element
             });
+            
             dispatch(SET_CHATS_LIST({ chats: newState }))
         }
+        else dispatch(UPDATE_CHAT_BADGE({chat_id:msg.chat._id,badge:1}))
     }
 
     useEffect(() => {

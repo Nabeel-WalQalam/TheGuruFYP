@@ -19,6 +19,7 @@ function SUprofile({ name, img, _id, onClose }) {
       if (i.isGroupChat) return false;
       return i.users[0]._id === _id
     })
+
     if (findChat) {
       toast({
 
@@ -29,6 +30,7 @@ function SUprofile({ name, img, _id, onClose }) {
       })
       return
     }
+
     setaxiosinprocess(true);
 
     axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/accesschat`, { user_id: _id }, { headers: { token: localStorage.getItem('token') } })

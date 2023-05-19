@@ -72,7 +72,7 @@ function SideBar() {
 
 
   }, [openChatbox])
-
+console.log(chatsList)
   return (
     <Box style={sideStyles} >
       <Box mt="100px">
@@ -86,13 +86,25 @@ function SideBar() {
 
       <Box pt="20px">
 
-        {chatsList.map((chat) => {
+        {chatsList.length>0? chatsList.map((chat) => {
           return (
             <Box key={chat._id}>
               <MyChats setopenChatbox={setopenChatbox} setselectedChat={setselectedChat} name={chat.users[0].name} chat={chat} activeChat={activeChat} />
             </Box>
           )
-        })}
+        })
+        :
+        <Box
+        color={"GrayText"}
+        fontWeight={"bold"}
+        textAlign={"center"}
+        height={"500px"}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        >
+          No chats</Box>
+      }
 
       </Box>
 
