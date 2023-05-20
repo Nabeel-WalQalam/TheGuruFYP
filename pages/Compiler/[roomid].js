@@ -181,13 +181,11 @@ export default function EditorCom() {
 
   return (
     <>
-      <Flex>
+      <Flex border={"1px"} borderColor="dark blue">
         <Flex
           direction={"column"}
           width="100%"
           // height={"100%"}
-          // border={"50px"}
-          // borderColor="green"
         >
           <Box width={"100%"}>
             {/* <Editor
@@ -276,9 +274,7 @@ export default function EditorCom() {
               color={"white"}
               //  border="1px"
               bg="grey"
-            >
-              Hello World
-            </Text>
+            ></Text>
           </Box>
         </Flex>
         <Box

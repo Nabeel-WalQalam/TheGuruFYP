@@ -321,21 +321,49 @@ function Navbar() {
             <>
               <Flex align={"center"} justify="center">
                 <Stack direction={"row"} spacing={3} align={"center"}>
-                  <Avatar
-                    // border={"1px"}
-                    // borderColor="gray.100"
-                    name={user ? user.name : "User"}
-                    src="#"
-                  />
+                  <Menu>
+                    <MenuButton position={"relative"}>
+                      <Avatar
+                        // border={"1px"}
+                        // borderColor="gray.100"
+                        name={user ? user.name : "User"}
+                        src="#"
+                      />
+                    </MenuButton>
+                    <MenuList
+                      // border="1px"
+                      position="absolute"
+                      height={"100px"}
+                      w={"60%"}
+                      top={"0.5rem"}
+                      left={"-5rem"}
+                    >
+                      <Flex direction={"column"}>
+                        <Button
+                          variant={"ghost"}
+                          colorScheme={"guru"}
+                          // onClick={handleLogout}
+                        >
+                          My Account
+                        </Button>
+                        <Button
+                          variant={"ghost"}
+                          colorScheme={"guru"}
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </Button>
+                      </Flex>
+                    </MenuList>
+                  </Menu>
+
                   <Stack direction={"column"} spacing={0} fontSize={"sm"}>
-                    <Text fontWeight={600}>{user ? user.name : "User"}</Text>
+                    <Text textTransform={"capitalize"} fontWeight={600}>
+                      {user ? user.name : "User"}
+                    </Text>
                   </Stack>
                 </Stack>
                 <Box mx={"0.8rem"}></Box>
-
-                <Button colorScheme={"guru"} onClick={handleLogout}>
-                  Logout
-                </Button>
               </Flex>
             </>
           ) : (
