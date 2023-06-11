@@ -22,6 +22,9 @@ const chatSchema = new Schema({
         default: true,
         required: true
     },
+    admin:{
+        type: mongoose.Schema.Types.ObjectId, ref: "user" 
+    },
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     badge:{
         type:Number,

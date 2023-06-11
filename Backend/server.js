@@ -29,6 +29,7 @@ const getAllAnswer = require("./routes/getAllUserAnswer");
 const Chat = require("./database/Models/chatModel");
 const deleteQuestion = require('./routes/deleteQuestion')
 const path = require("path");
+const chatModel = require("./database/Models/chatModel");
 
 dbConnection();
 const corsOptions = {
@@ -113,6 +114,22 @@ io.on("connection", (socket) => {
 
   socket.on("chatrequest",async(payload,callback)=>{
     try {
+      const chatExists = await chatModel.exists({
+        $and: [
+          { users: { $all: [payload.user_id, payload.fromUser._id] } },
+          { users: { $size: 2 } }
+        ]
+      });
+      if(chatExists){
+        const r= await chatModel.findById({_id:chatExists._id});
+        if(r.sessionStatus === true)
+        {
+          callback({msg:"Request Already Approved",success:false})
+          return;
+          
+        }
+      }
+      console.log("after return ")
 const res=await userModel.findOne({_id:payload.user_id,chatRequests: { $elemMatch: { _id: payload.fromUser._id } },})
 
 if(res === null){

@@ -12,13 +12,18 @@ import { SearchIcon } from "@chakra-ui/icons"
 import SUprofile from './SUprofile'
 import Loader from '../../Loader'
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { ADD_NEW_CHAT } from '../../redux/reducers/chat-reducer'
+import { removechatrequests } from '../../redux/reducers/user-reducer'
 function FindUserModal({ children }) {
+  const dispatch = useDispatch()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showloading, setshowloading] = useState(false)
   const [searchUsers, setsearchUsers] = useState([])
   const user = useSelector((state) => state.userReducer.currentUser)
+  const { chatsList } = useSelector((state) => state.chatReducer)
+
   const toast = useToast();
 
   useEffect(() => {
@@ -63,34 +68,49 @@ function FindUserModal({ children }) {
   //     })
   // }
 
-  const handleApprove=(user_id)=>{
-    console.log(user_id)
-    axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/updatesessionStatus`, {user_id},{ headers: { token: localStorage.getItem('token') } })
-        .then(res => {
-          console.log(res);
-          if (res.data.success) {
-          
+  const handleApprove = (user_id) => {
+
+    axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/updatesessionStatus`, { user_id }, { headers: { token: localStorage.getItem('token') } })
+      .then(res => {
+        console.log(res);
+        if (res.data.success) {
+          const findChat = chatsList.find((i) => {
+            if (i.isGroupChat) return false;
+            return i.users[0]._id === user_id
+          })
+          dispatch(removechatrequests(user_id))
+          if (findChat) {
+
           }
-  
           else {
-            toast({
-              title: "ERROR OCCURED",
-              description: res.data.payload,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            });
+            dispatch(ADD_NEW_CHAT({ newChat: res.data.payload }))
+
           }
-        }
-  
-        ).catch(function (error) {
           toast({
-            title: error.message,
+            title: "Approved",
+            status: 'success'
+          });
+        }
+
+        else {
+          toast({
+            title: "ERROR OCCURED",
+            description: res.data.payload,
             status: 'error',
             duration: 5000,
             isClosable: true,
           });
-        })
+        }
+      }
+
+      ).catch(function (error) {
+        toast({
+          title: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      })
   }
 
   return (
@@ -117,26 +137,38 @@ function FindUserModal({ children }) {
 
             </InputGroup> */}
 
-{user.chatRequests.map((r,i)=>{
-  return   <Flex alignItems="center" mb={"10px"}>
-  <Avatar size="md" name={r.name} src={r.profileImage} />
-  <Box ml="4">
-    <Text fontWeight="bold">{r.name}</Text>
-  </Box>
-  <Flex ml="auto">
-    <Button mr="2" colorScheme="green" size="sm" border={"none"} onClick={()=>handleApprove(r._id)}>
-      Approve
-    </Button>
-    <Button colorScheme="red" size="sm" border={"none"}>
-      Reject
-    </Button>
-  </Flex>
-</Flex>
 
-})}
+            {user.chatRequests.length > 0 ? user.chatRequests.map((r, i) => {
+              return <Flex alignItems="center" mb={"10px"}>
+                <Avatar size="md" name={r.name} src={r.profileImage} />
+                <Box ml="4">
+                  <Text fontWeight="bold">{r.name}</Text>
+                </Box>
+                <Flex ml="auto">
+                  <Button mr="2" colorScheme="green" size="sm" border={"none"} onClick={() => handleApprove(r._id)}>
+                    Approve
+                  </Button>
+                  <Button colorScheme="red" size="sm" border={"none"}>
+                    Reject
+                  </Button>
+                </Flex>
+              </Flex>
+
+            })
+              : <Flex alignItems="center" justifyContent={"center"} textAlign={"center"}
+              width={"100%"} 
+              >
+                <Box>
+                <Text>No Requests Yet!</Text>
+                </Box>
+              </Flex >
 
 
-          
+
+            }
+
+
+
 
 
 

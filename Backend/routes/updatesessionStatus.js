@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const authuser = require('../middlewares/authuser');
 const User = require("../database/Models/userModel")
-const Chat = require("../database/Models/chatModel")
+const Chat = require("../database/Models/chatModel");
+const userModel = require('../database/Models/userModel');
 
 module.exports = router;
 
@@ -15,22 +16,29 @@ router.post("/", authuser, async (req, res) => {// send existing chat if availab
 if(req.user._id !==  user_id){
   try {
 
+    // const res=await userModel.findOneAndUpdate({_id:req.user._id,chatRequests: { $elemMatch: { _id: user_id } }})
+    const r = await userModel.findOneAndUpdate(
+      { _id: req.user._id },
+      { $pull: { chatRequests: { _id: user_id } } }
+    );
+
+
     const chatExists = await Chat.exists({
       $and: [
         { users: { $all: [user_id, req.user._id] } },
         { users: { $size: 2 } }
       ]
     });
-    console.log("chatExists")
-    console.log(chatExists)
+   
     if(chatExists){
-        await Chat.findByIdAndUpdate({_id:chatExists._id},{sessionStatus:true})
+        await Chat.findByIdAndUpdate({_id:chatExists._id},{sessionStatus:true,admin:req.user._id})
           res.send({ success: true, payload: "Approved" });
     }
     else{
 
           const newChat = new Chat({
-            users: [req.user._id, user_id]
+            users: [req.user._id, user_id],
+            admin:req.user._id
           });
           const savedChat = await newChat.save();
         
@@ -44,7 +52,8 @@ if(req.user._id !==  user_id){
 }
 catch (error) {
   console.log("first")
-  res.send({ success: false, payload: error });
+  console.log(error)
+  res.send({ success: false, payload: "Network Error" });
 }
 
 }

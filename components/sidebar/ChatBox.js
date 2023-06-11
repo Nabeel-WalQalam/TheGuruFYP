@@ -11,6 +11,7 @@ import {
     useToast,
     VStack,
     HStack,
+    Badge
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
@@ -33,7 +34,6 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
     const user = useSelector((state) => state.userReducer.currentUser);
     const apiLoading = useSelector(state => state.chatReducer.apiLoading)
     const msgfield = useRef()
-
 
 
     const AlwaysScrollToBottom = () => {
@@ -109,7 +109,7 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
 
 
     }
-
+    console.log(activeChat)
     return (
         <Box
             borderRadius={"8px"}
@@ -148,7 +148,13 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                         <Text fontSize="lg" fontWeight="bold">
                             {activeChat?.users[0].name}
                         </Text>
-                        <Text color={"red.500"}>Offline</Text>
+                        {activeChat?.sessionStatus ? 
+                        <Badge variant='solid' colorScheme='green'>session: Open</Badge>
+                        :
+                        <Badge variant='solid' colorScheme='red'>session: Closed</Badge>
+                    }
+                   
+                        
                     </Flex>
                 </Flex>
                 <Divider borderBottomWidth="3px" color="black" mt="5" />

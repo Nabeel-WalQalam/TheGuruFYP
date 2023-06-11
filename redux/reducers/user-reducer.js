@@ -14,11 +14,18 @@ export const userReducer = createSlice({
     },
     updatechatrequests:(state,action)=>{
       state.currentUser.chatRequests.push(action.payload)
+    },
+    removechatrequests:(state,action)=>{
+      state.currentUser.chatRequests= state.currentUser.chatRequests.filter((c)=>{
+        return c._id !== action.payload
+      })
+
+
     }
   },
 });
 
-export const { setCurrentUser,updatechatrequests } = userReducer.actions;
+export const { setCurrentUser,updatechatrequests,removechatrequests } = userReducer.actions;
 
 
 
