@@ -112,6 +112,20 @@ io.on("connection", (socket) => {
     });
   });
 
+socket.on("endSession",async(payload,cb)=>{
+  try {
+
+    await chatModel.findByIdAndUpdate({_id:payload.chat_id},{sessionStatus:false})
+    cb({msg:"Session Ended",success:true})
+    socket.to(payload.user_id).emit("sessionEnded",{chat_id:payload.chat_id})
+    
+  } catch (error) {
+    cb({msg:"Network Error",success:false})
+  }
+})
+
+
+
   socket.on("chatrequest",async(payload,callback)=>{
     try {
       const chatExists = await chatModel.exists({

@@ -11,13 +11,14 @@ import {
     useToast,
     VStack,
     HStack,
-    Badge
+    Badge,
+    Button
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
 import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST } from "../../redux/reducers/chat-reducer";
+import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST, updateChatSession } from "../../redux/reducers/chat-reducer";
 import { AiOutlineSend } from "react-icons/ai";
 import { socket } from "../socketWrapper";
 import LoadingBar from 'react-top-loading-bar'
@@ -47,6 +48,13 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
 
         const msg = msgfield.current.value;
         if (msg.length === 0) return;
+        if(activeChat.sessionStatus === false){
+            toast({
+                title:"Can't send message",
+                description:"Session is closed"
+            })
+            return;
+        }
         msgfield.current.disabled = true;
         setProgress2(20);
         axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/sendmsg`, { chat_id: activeChat._id, msg }, { headers: { token: localStorage.getItem("token") } })
@@ -110,6 +118,33 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
 
     }
     console.log(activeChat)
+
+    const handleEndSession=()=>{
+        if(activeChat.sessionStatus === false){
+            toast({
+                title:"Session Already Closed",
+                status:"warning"
+            })
+            return
+        }
+        socket.emit("endSession",{chat_id:activeChat._id,user_id:activeChat.users[0]._id},(res)=>{
+            if(res.success){
+                toast({
+                    title:"Session Closed",
+                    status:"success"
+                })
+                dispatch(SET_ACTIVE_CHAT({chat:{...activeChat,sessionStatus:false}}))
+                dispatch(updateChatSession({_id:activeChat._id,status:false}))
+
+            }
+            else{
+                toast({
+                    title:"Error",
+                    description:"Network Error",
+                })
+            }
+        })
+    }
     return (
         <Box
             borderRadius={"8px"}
@@ -153,9 +188,14 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
                         :
                         <Badge variant='solid' colorScheme='red'>session: Closed</Badge>
                     }
+
                    
                         
                     </Flex>
+
+                    {user._id === activeChat?.admin &&<Button onClick={handleEndSession} size={"xs"} variant={"outline"} colorScheme="red" 
+                    mt="33px"
+                    >End Session</Button>}
                 </Flex>
                 <Divider borderBottomWidth="3px" color="black" mt="5" />
 

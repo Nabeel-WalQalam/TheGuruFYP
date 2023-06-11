@@ -55,13 +55,24 @@ export const chatReducer = createSlice({
         SET_API_LOADING: (state, action) => {
             state.apiLoading = action.payload
         },
+        updateChatSession:(state,action)=>{
+            console.log("in",action)
+            const newState= state.chatsList.map((c)=>{
+                if(c._id === action.payload._id)
+                return {...c,sessionStatus:action.payload.status}
+                else
+                return c
+
+            })
+            state.chatsList= newState;
+        }
 
 
 
     },
 });
 
-export const { SET_API_LOADING, UPDATE_CHAT_BADGE, ADD_NEW_CHAT, APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST, SET_ACTIVE_CHAT } = chatReducer.actions;
+export const { SET_API_LOADING, UPDATE_CHAT_BADGE, ADD_NEW_CHAT, APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST, SET_ACTIVE_CHAT,updateChatSession } = chatReducer.actions;
 
 
 

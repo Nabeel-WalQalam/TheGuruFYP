@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { APPEND_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST,UPDATE_CHAT_BADGE } from '../redux/reducers/chat-reducer';
+import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT, SET_CHATS_LIST, UPDATE_CHAT_BADGE, updateChatSession } from '../redux/reducers/chat-reducer';
 import io from "socket.io-client";
 import { useRef } from 'react';
 import { updatechatrequests } from '../redux/reducers/user-reducer';
@@ -16,7 +16,6 @@ function SocketWrapper({ children }) {
     const user = useSelector(state => state.userReducer.currentUser)
     const chatsList = useSelector(state => state.chatReducer.chatsList)
     const activeChatRef = useRef();
-console.log("current user: ",user)
 
     useEffect(() => {
         activeChatRef.current = activeChat
@@ -37,10 +36,10 @@ console.log("current user: ",user)
 
                 return element
             });
-            
+
             dispatch(SET_CHATS_LIST({ chats: newState }))
         }
-        else dispatch(UPDATE_CHAT_BADGE({chat_id:msg.chat._id,badge:1}))
+        else dispatch(UPDATE_CHAT_BADGE({ chat_id: msg.chat._id, badge: 1 }))
     }
 
     useEffect(() => {
@@ -57,16 +56,24 @@ console.log("current user: ",user)
 
         socket.on("message received", appendMsg)
 
-        socket.on("chatRequestReceive", (fromUser)=>{
-            console.log("fromUser",fromUser)
-dispatch(updatechatrequests(fromUser))
+        socket.on("chatRequestReceive", (fromUser) => {
+            dispatch(updatechatrequests(fromUser))
         })
-        
+
+        socket.on("sessionEnded", (payload) => {
+            dispatch(updateChatSession({ _id: payload.chat_id, status: false }))
+            if (activeChatRef.current._id === payload.chat_id)
+                dispatch(SET_ACTIVE_CHAT({ chat: { ...activeChatRef.current, sessionStatus: false } }))
+
+        })
+
         return () => {
             socket.off("connect");
             socket.off("message received")
             socket.off("chatRequestReceive")
             socket.off("disconnect")
+            socket.off("sessionEnded")
+
             socket.disconnect()
         }
     }, [user])

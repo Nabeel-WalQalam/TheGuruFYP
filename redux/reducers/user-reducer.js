@@ -19,9 +19,8 @@ export const userReducer = createSlice({
       state.currentUser.chatRequests= state.currentUser.chatRequests.filter((c)=>{
         return c._id !== action.payload
       })
-
-
     }
+    
   },
 });
 
