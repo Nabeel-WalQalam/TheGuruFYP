@@ -17,6 +17,11 @@ const chatSchema = new Schema({
 
     }
     ,
+    sessionStatus: {
+        type: Boolean,
+        default: true,
+        required: true
+    },
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     badge:{
         type:Number,

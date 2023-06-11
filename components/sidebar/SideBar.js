@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Box, Button, Icon, ScaleFade, useDisclosure, useToast } from '@chakra-ui/react'
+import { Badge, Box, Button, Icon, ScaleFade, useDisclosure, useToast } from '@chakra-ui/react'
 import ChatBox from './ChatBox'
 import { BiSearchAlt } from "react-icons/bi";
 import MyChats from './MyChats';
@@ -72,13 +72,13 @@ function SideBar() {
 
 
   }, [openChatbox])
-console.log(chatsList)
+// console.log(chatsList)
   return (
     <Box style={sideStyles} >
       <Box mt="100px">
 
         <FindUserModal>
-          <Button colorScheme={"guru"} display="block" mx="auto" w="180px" ><Icon as={BiSearchAlt} position="absolute" left={"10px"} boxSize="23px" top="8px" /> Find Users</Button>
+          <Button colorScheme={"guru"} display="block" mx="auto" w="180px" > Chat Requests</Button>
         </FindUserModal>
 
       </Box>

@@ -40,6 +40,8 @@ import ReactHtmlParser from "react-html-parser";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { BsFillReplyFill } from "react-icons/bs";
 import { useToast } from "@chakra-ui/react";
+import { socket } from "./socketWrapper";
+
 
 export const Answers = ({ Answers, isPosted }) => {
   const user = useSelector((state) => state.userReducer.currentUser);
@@ -167,6 +169,26 @@ export const Answers = ({ Answers, isPosted }) => {
         console.log(error);
       });
   };
+  
+  const handleStartChat=()=>{
+
+socket.emit("chatrequest",{user_id:Answers.user._id,fromUser:user},(res)=>{
+  if(res.success){
+    toast({
+      title:res.msg,
+      status: 'success'
+
+    })
+  }
+  else{
+    toast({
+      title:res.msg,
+
+    })
+  }
+  
+})
+  }
 
   return (
     <>
@@ -336,6 +358,7 @@ export const Answers = ({ Answers, isPosted }) => {
               >
                 Add Comment
               </Button>
+              <Button onClick={handleStartChat}>Start a chat</Button>
 
               <Modal size={"lg"} isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />

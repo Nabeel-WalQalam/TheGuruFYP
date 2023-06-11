@@ -28,7 +28,7 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
   const sliceLatestmsg = (msg) => {
     return msg.slice(0, 24)
   }
-  console.log(chat)
+  // console.log(chat)
   return (
     <>
 

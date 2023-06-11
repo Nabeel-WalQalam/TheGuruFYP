@@ -23,17 +23,24 @@ if(req.user._id !==  user_id){
     });
     console.log("chatExists")
     console.log(chatExists)
-  const newChat = new Chat({
-    users: [req.user._id, user_id]
-  });
-  const savedChat = await newChat.save();
+    if(chatExists){
+        await Chat.findByIdAndUpdate({_id:chatExists._id},{sessionStatus:true})
+          res.send({ success: true, payload: "Approved" });
+    }
+    else{
 
-  const response = await Chat.findById(savedChat._id).populate({
-    path: "users",
-    match: { _id: { $eq: user_id } }
-  });
-
-  res.send({ success: true, payload: response });
+          const newChat = new Chat({
+            users: [req.user._id, user_id]
+          });
+          const savedChat = await newChat.save();
+        
+          const response = await Chat.findById(savedChat._id).populate({
+            path: "users",
+            match: { _id: { $eq: user_id } }
+          });
+        
+          res.send({ success: true, payload: response });
+    }
 }
 catch (error) {
   console.log("first")
