@@ -12,10 +12,13 @@ export const userReducer = createSlice({
       state.currentUser = action.payload;
       //   state.userInfo = action;
     },
+    updatechatrequests:(state,action)=>{
+      state.currentUser.chatRequests.push(action.payload)
+    }
   },
 });
 
-export const { setCurrentUser } = userReducer.actions;
+export const { setCurrentUser,updatechatrequests } = userReducer.actions;
 
 
 

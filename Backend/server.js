@@ -5,6 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const { Socket } = require("socket.io-client");
 const dbConnection = require("./database/connection");
+const userModel = require("./database/Models/userModel")
 
 const createuser = require("./routes/createuser");
 const loginuser = require("./routes/loginuser");
@@ -13,6 +14,7 @@ const sendmsg = require("./routes/sendmsg");
 const fetchmessages = require("./routes/fetchmessages");
 const getallchats = require("./routes/getallchats");
 const accessChat = require("./routes/accessChat");
+const updatesessionStatus = require("./routes/updatesessionStatus");
 const searchuser = require("./routes/searchuser");
 const creategroupchat = require("./routes/creategroupchat");
 const postQuestion = require("./routes/postQuestion");
@@ -55,6 +57,7 @@ app.use("/api/searchuser", searchuser);
 app.use("/api/accessChat", accessChat);
 app.use("/api/getallchats", getallchats);
 app.use("/api/fetchmessages", fetchmessages);
+app.use("/api/updatesessionStatus", updatesessionStatus);
 app.use("/api/sendmsg", sendmsg);
 
 
@@ -107,6 +110,27 @@ io.on("connection", (socket) => {
       socket.to(user._id).emit("message received", message);
     });
   });
+
+  socket.on("chatrequest",async(payload,callback)=>{
+    try {
+const res=await userModel.findOne({_id:payload.user_id,chatRequests: { $elemMatch: { _id: payload.fromUser._id } },})
+
+if(res === null){
+      await userModel.findByIdAndUpdate({_id:payload.user_id},
+  {$push:{chatRequests:payload.fromUser}}
+)
+socket.to(payload.user_id).emit("chatRequestReceive",payload.fromUser)
+callback({msg:"Request Sent",success:true})
+}
+else{
+  callback({msg:"Aready Requested",success:false})
+}
+    } catch (error) {
+      console.log("error")
+      console.log(error)
+    }
+
+  })
 
   socket.on("join", ({ roomId, username }) => {
     //get the username... to room

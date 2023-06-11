@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { APPEND_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST,UPDATE_CHAT_BADGE } from '../redux/reducers/chat-reducer';
 import io from "socket.io-client";
 import { useRef } from 'react';
+import { updatechatrequests } from '../redux/reducers/user-reducer';
 
 
 export let socket = '';
@@ -15,7 +16,7 @@ function SocketWrapper({ children }) {
     const user = useSelector(state => state.userReducer.currentUser)
     const chatsList = useSelector(state => state.chatReducer.chatsList)
     const activeChatRef = useRef();
-
+console.log("current user: ",user)
 
     useEffect(() => {
         activeChatRef.current = activeChat
@@ -55,9 +56,16 @@ function SocketWrapper({ children }) {
         socket.on("disconnect", () => { console.log("disocnnected") })
 
         socket.on("message received", appendMsg)
+
+        socket.on("chatRequestReceive", (fromUser)=>{
+            console.log("fromUser",fromUser)
+dispatch(updatechatrequests(fromUser))
+        })
+        
         return () => {
             socket.off("connect");
             socket.off("message received")
+            socket.off("chatRequestReceive")
             socket.off("disconnect")
             socket.disconnect()
         }
