@@ -1,5 +1,5 @@
 import { React, useState, useRef, useEffect } from "react";
-import { Collapse } from "@chakra-ui/react";
+import { Collapse, Textarea, Tooltip } from "@chakra-ui/react";
 import { TimeIcon, ViewIcon } from "@chakra-ui/icons";
 import { useMediaQuery } from "@chakra-ui/react";
 import axios from "axios";
@@ -38,7 +38,7 @@ import { userReducer } from "../redux/reducers/user-reducer";
 import ReactHtmlParser from "react-html-parser";
 
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { BsFillReplyFill } from "react-icons/bs";
+import { BsArrowDownCircle, BsArrowUpCircle, BsFillReplyFill } from "react-icons/bs";
 import { useToast } from "@chakra-ui/react";
 
 export const Answers = ({ Answers, isPosted }) => {
@@ -239,9 +239,12 @@ export const Answers = ({ Answers, isPosted }) => {
             ml="6"
             bg={"gray.100"}
             p={"0.5rem"}
+            mt='1rem'
           >
-            <Box width={"95%"}>
-              <Box p={"2rem"}>
+            <Box  width={"95%"}>
+              <Box
+              //  p={"2rem"}
+              >
                 {Answers ? ReactHtmlParser(Answers.asnwer_description) : ""}
               </Box>
             </Box>
@@ -249,7 +252,7 @@ export const Answers = ({ Answers, isPosted }) => {
 
           {/* Third Box */}
 
-          <Divider width={"60%"} my="3"></Divider>
+          {/* <Divider width={"60%"} my="3"></Divider> */}
         </Flex>
         <Flex
           // flexDirection={"column"}
@@ -268,6 +271,7 @@ export const Answers = ({ Answers, isPosted }) => {
             // ml="15"
             align={"center"}
           >
+            <Tooltip label="up vote" >
             <Button
               variant={"none"}
               ml={"4rem"}
@@ -279,23 +283,23 @@ export const Answers = ({ Answers, isPosted }) => {
               isDisabled={disableVotes}
               onClick={() => handleanswerVote(Answers._id, "upVote")}
             >
-              <FaArrowUp
-                fontSize={"1.5rem"}
+              <BsArrowUpCircle
+                fontSize={"2rem"}
                 fontWeight={"bold"}
-                fill={upVote ? "purple" : "black"}
+                fill={upVote ? "purple" : "gray"}
               />
               {/* <Text mx={"1"} className="text">
                 Up vote
               </Text> */}
             </Button>
+            </Tooltip>
             <Text
-              bg="#635DFF"
-              padding="1px 20px"
-              color={"white"}
-              borderRadius={"5"}
+              // bg="#635DFF"
+              fontSize={'1.5rem'} fontWeight={"semibold"}
             >
               {Answers ? Answers.upVote.length - Answers.downVote.length : 0}
             </Text>
+            <Tooltip label="down vote" >
             <Button
               variant={"none"}
               isDisabled={disableVotes}
@@ -306,45 +310,56 @@ export const Answers = ({ Answers, isPosted }) => {
               className="ArrowUp"
               onClick={() => handleanswerVote(Answers._id, "downVote")}
             >
-              <FaArrowDown
-                fontSize={"1.5rem"}
+
+              <BsArrowDownCircle
+                fontSize={"2rem"}
                 fontWeight={"bold"}
-                fill={downVote ? "purple" : "black"}
+                fill={downVote ? "purple" : "gray"}
               />
-              {/* <Text className="text" ml={"1"}>
-                Down Vote
-              </Text> */}
+              
             </Button>
+            </Tooltip>
+
+  
 
             <Box
               mx={"3"}
               display={"flex"}
               justifyContent="center"
               alignItems={"center"}
-              bg="#635DFF"
-              padding="3px 25px"
+              // bg="#635DFF"
+              border={'1px'}
+              borderColor={'gray.200'}
+              padding="1px 15px"
               // color={"white"}
               borderRadius={"5"}
+              _hover={{
+                textDecor:'underline',
+                borderColor:'#153A5B'
+              }}
             >
-              <BsFillReplyFill fill="white" />
+                
+              <BsFillReplyFill  />
 
               <Button
                 variant={"none"}
                 border={"none"}
-                color={"white"}
+                _focus={'none'}
+                // color={"white"}
                 onClick={onOpen}
               >
                 Add Comment
               </Button>
+              
 
               <Modal size={"lg"} isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                  <ModalHeader>Modal Title</ModalHeader>
+                  <ModalHeader>Comment</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
                     <Flex justify={"center"} direction={"column"}>
-                      <Input ref={comment} type="text" />
+                      <Textarea ref={comment} placeholder="please give a valid commente" />
                       <Button
                         isDisabled={disable}
                         mt={"1rem"}
@@ -357,7 +372,7 @@ export const Answers = ({ Answers, isPosted }) => {
                   </ModalBody>
 
                   <ModalFooter>
-                    <Button colorScheme="blue" mr={3} onClick={onClose}>
+                    <Button colorScheme="facebook" mr={3} onClick={onClose}>
                       Close
                     </Button>
                   </ModalFooter>
@@ -381,7 +396,9 @@ export const Answers = ({ Answers, isPosted }) => {
           </Box> */}
         </Flex>
 
-        <Flex w={"90%"} marginInline={"auto"} mt={"2rem"} direction={"column"}>
+        <Divider width={"60%"}  mx='auto' my={'2rem'}></Divider>
+
+        <Flex w={"90%"} marginInline={"auto"}  direction={"column"}>
           {/* <Text>Comments : </Text> */}
           {Answers.commet
             ? Answers.commet.map((comments, index) => {

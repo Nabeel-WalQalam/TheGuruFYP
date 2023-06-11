@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
-// import clipboard from "clipboard";
 import {
   Flex,
   Box,
@@ -11,37 +10,53 @@ import {
   Input,
   Text,
   Select,
+  Spinner,
+  useToast
 } from "@chakra-ui/react";
-// import Editor from "@monaco-editor/react";
+
+
 import { useRouter } from "next/router";
 import { BsFillPlayCircleFill } from "react-icons/bs";
 import AvatarCard from "../../components/AvatarCard";
-
 import { initSocket } from "../../socket";
 import { basicSetup } from "codemirror";
-
-import { EditorView, ViewUpdate } from "@codemirror/view";
+// import { basicSetup } from "@codemirror/basic-setup";
+import { EditorView  } from "@codemirror/view";
+import { vscodeDark  } from "@uiw/codemirror-theme-vscode";
+import { oneDark } from "@codemirror/theme-one-dark";
+import {  autoCloseTags, javascript } from "@codemirror/lang-javascript";
+import { cpp, cppLanguage } from "@codemirror/lang-cpp";
+import { keymap } from "@codemirror/view";
 import { defaultKeymap } from "@codemirror/commands";
-// import { useCodeMirror } from "@uiw/react-codemirror";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import  {autocompletion}  from "@codemirror/autocomplete";
 
-import { autoCloseTags, javascript } from "@codemirror/lang-javascript";
-
-// import EditorPage from "../../components/EditorPage";
+import { highlightSelectionMatches } from "@codemirror/search";
+import { bracketMatching } from "@codemirror/matchbrackets";
+import { foldGutter, foldKeymap } from "@codemirror/fold";
+import { commentKeymap } from "@codemirror/comment";
+import { lint } from "@codemirror/lint";
+import { python, pythonLanguage } from "@codemirror/lang-python";
+import { styleTags } from '@codemirror/highlight';
 import { onUpdate } from "../../components/Update";
+import axios from "axios";
 export default function EditorCom() {
-  // const [code, setCode] = useState(
-  //   "initial code state that can be changed externally"
-  // );
+
   const editor = useRef(null);
-  // const valueRef = useRef(code);
-  // const [field, setfield] = useState("xyz");
   const [client, setClient] = useState([]);
   const router = useRouter();
   const roomId = router.query.roomid;
   const [view, setView] = useState();
-  const [code, setcode] = useState();
-  // const editorRef = useRef(null);
+  const [code, setcode] = useState('');
+  const [Language, SetLanguage] = useState('')
+  const [output, setoutput] = useState('')
+  const [error, seterror] = useState('')
+  const [loading, setloading] = useState(false)
+  const [UserInput, setUserInput] = useState('')
+  const toast = useToast();
+
+  // const basicKeymap = keymap.of(defaultKeymap);
+
+  // console.log('code' , code)
 
   const socketRef = useRef(null);
   const coderef = useRef();
@@ -76,7 +91,7 @@ export default function EditorCom() {
         if (username !== router.query.username) {
           console.log(`${username} joined`);
         }
-        console.log(coderef);
+        // console.log(coderef);
         setClient(clients);
         socketRef.current.emit("sync-code", {
           code: coderef.current,
@@ -89,6 +104,12 @@ export default function EditorCom() {
       socketRef.current.on("disconnected", ({ socketId, username }) => {
         // toast.success(`${username} left the room.`);
         console.log(`${username} left`);
+        toast({
+          title: 'User left',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        })
         setClient((prev) => {
           return prev.filter((client) => client.socketId !== socketId);
         });
@@ -109,9 +130,9 @@ export default function EditorCom() {
   }, []);
 
   useEffect(() => {
-    const handleCodeChange = ({ value }) => {
+    const handleCodeChange = ({ value, output }) => {
       // console.log(value);
-
+setoutput(output)
       const editorValue = view.state.doc.toString();
       if (value !== editorValue) {
         view.dispatch({
@@ -137,14 +158,18 @@ export default function EditorCom() {
     const view = new EditorView({
       extensions: [
         basicSetup,
-
-        vscodeDark,
-
+    cpp(),
+    python(),
+    pythonLanguage,
+    cppLanguage,
+    vscodeDark,
+    // oneDark,
+    highlightSelectionMatches(),
+  
         javascript({
-          jsx: true,
-          typescript: true,
+          jsx:true
         }),
-
+        // styleTags(),
         onUpdate(handleChange),
       ],
       parent: editor.current,
@@ -164,9 +189,12 @@ export default function EditorCom() {
 
   const handleChange = (value, viewUpdate) => {
     coderef.current = value;
+    // console.log(value)
+    setcode(value)
     socketRef.current.emit("code-change", {
       roomId,
       value,
+      output
     });
   };
 
@@ -177,10 +205,84 @@ export default function EditorCom() {
   };
   const handleCopy = () => {
     navigator.clipboard.writeText(roomId);
+    toast({
+      title: 'Room id copy successfully',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
   };
 
+
+  const handleCodeSubmit = async()=>{
+    if(Language == ''){
+      toast({
+        title: 'Please Select language',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      })
+      return;
+    }else if(code == ''){
+      toast({
+        title: 'Please write the correct code',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      })
+      return;
+    }
+    
+    else{
+// console.log(code)
+
+      try {
+
+        setloading(true)
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/postCompiler`, {
+          code: code,
+          languange:Language,
+          userInput:UserInput,
+        });
+        // console.log(response)
+        if(response.data.output.output){
+          console.log(response.data.output)
+          setoutput(response.data.output.output)
+          toast({
+            title: 'Program run successfully',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          })
+          return;
+        }else{
+          console.log('error',response.data.output)
+          setoutput(response.data.output.error)
+          toast({
+            title: 'Some error occured',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          })
+          return;
+        }
+        setloading(false)
+        // Handle the response from the backend if needed
+      } catch (error) {
+        console.log('error' , error)
+        setloading(false)
+        // Handle any error that occurs during the request
+      }
+
+    }
+    // console.log(code , Language)
+
+   
+
+  }
   return (
     <>
+   
       <Flex border={"1px"} borderColor="dark blue">
         <Flex
           direction={"column"}
@@ -188,16 +290,9 @@ export default function EditorCom() {
           // height={"100%"}
         >
           <Box width={"100%"}>
-            {/* <Editor
-              // value={field}
-              height="70vh"
-              defaultLanguage="javascript"
-              theme="vs-dark"
-              onMount={handleEditorDidMount}
-              onChange={handleInput}
-            /> */}
+          
             <Box
-              // border={"1px"}
+              border={"1px"}
               // borderColor="white"
               position={"relative"}
               fontSize={"1rem"}
@@ -205,18 +300,20 @@ export default function EditorCom() {
               ref={editor}
             />
             <Flex
-              height={"70%"}
+              // height={"70%"}
               bg={"#282A36"}
 
-              // my="0.1rem"
             >
-              <Flex justify={"center"} align="center">
-                <Box position={"absolute"} bottom="15.4rem" right={"24rem"}>
+              <Flex  justify={"center"} align="center">
+                <Box  py='1rem' >
                   <Select
-                    placeholder="Select Lang"
+                  ml={'1rem'}
+                  pos={'relative'}
+                    placeholder="Select Language"
                     color={"grey"}
                     fontWeight="bold"
                     required
+                    onChange={(e)=>SetLanguage(e.target.value)}
                   >
                     <option color="black" value="c++">
                       C++
@@ -224,46 +321,55 @@ export default function EditorCom() {
                     <option color="black" value="Python">
                       Python
                     </option>
-                    <option color="black" value="Javascript">
+                    {/* <option color="black" value="Javascript">
                       Javascript
-                    </option>
+                    </option> */}
                   </Select>
                 </Box>
-                <Tooltip label="Run Code">
-                  <Box
+                {
+                  loading ? <Spinner/> :
+
+                  <>
+                  <Tooltip label="Run Code">
+                  <Button
+                  variant={'none'}
                     position={"absolute"}
-                    bottom="15rem"
+                    // bottom="12rem"
                     right={"20rem"}
-                    // border="1px"
-                    // borderColor={"#524DFF"}
-                    // borderRadius={"50%"}
-                    // borderColor="grey.100"
+                    border={'none'}
+                    borderRadius={'none'}
                     _hover={{
-                      //   border: "1px",
-                      //   borderColor: "black",
-                      borderRadius: "50%",
-                      boxShadow: "0 0 40px #524DFF",
+                    
+                      // borderRadius: "50%",
+                      // boxShadow: "0 0 40px #524DFF",
                       cursor: "pointer",
                     }}
+                    
                   >
                     <BsFillPlayCircleFill
                       fill="#524DFF"
                       size={"50px"}
-                      //   onClick={() => {
-                      //     console.log("button clicked");
-                      //   }}
+                        onClick={() => {
+                          handleCodeSubmit()
+                        }}
+                        
+                        
                     />
-                  </Box>
+                  </Button>
                 </Tooltip>
+                  </>
+                }
+                
               </Flex>
             </Flex>
           </Box>
-          <Box
+          <Flex justify={'space-between'}
             // border={"5px"}
             //  borderColor="green"
             height="35%"
             bg={"#1c1e29"}
           >
+            <Box width={'50%'}>
             <Heading size={"lg"} mt="0.5rem" ml={"0.5rem"} color={"white"}>
               Output
             </Heading>
@@ -273,14 +379,34 @@ export default function EditorCom() {
               p={"1rem"}
               color={"white"}
               //  border="1px"
+              width={'100%'}
+              height={'inherit'}
               bg="grey"
-            ></Text>
-          </Box>
+            >
+
+{ error != '' ? error : output}
+
+            </Text>
+            </Box>
+            <Box width={'45%'}>
+            <Heading size={"lg"} mt="0.5rem" ml={"0.5rem"} color={"white"}>
+             Compile with Input
+            </Heading>
+            <Textarea
+             mt="0.5rem"
+             p={"1rem"}
+             onChange={(e)=>setUserInput(e.target.value)}
+             color={"white"}
+             //  border="1px"
+             placeholder="enter the user input if have"
+            //  bg="grey"
+            /></Box>
+          </Flex>
         </Flex>
         <Box
-          bg={"#1c1e29"}
-          //   border={"1px"}
-          width="20%"
+          bg={"gray.900"}
+            // border={"1px"}
+          // width="20%"
           height={"90.4vh"}
           //   borderColor="#524DFF"
 
@@ -291,6 +417,7 @@ export default function EditorCom() {
             direction={"column"}
             justify="space-between"
             align={"center"}
+            px='1rem'
           >
             <Box
               color={"white"}
@@ -324,7 +451,7 @@ export default function EditorCom() {
                 })}
               </Flex>
             </Box>
-            <Flex justify={"space-evenly"} width="100%" mb={"2rem"}>
+            <Flex gap={'1rem'} justify={"space-evenly"} width="100%" mb={"2rem"}>
               <Button
                 onClick={handleCopy}
                 colorScheme={"green"}
@@ -339,6 +466,9 @@ export default function EditorCom() {
           </Flex>
         </Box>
       </Flex>
+      
+      
+    
     </>
   );
 }

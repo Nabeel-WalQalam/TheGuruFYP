@@ -19,11 +19,13 @@ const postQuestion = require("./routes/postQuestion");
 const postAnswer = require("./routes/postAnswer");
 const postComment = require("./routes/postComment");
 const postUpVote = require("./routes/postUpVote");
+const postCompiler = require("./routes/postCompiler");
 const postAnswerVote = require("./routes/postAnswerVote");
 const verifyToken = require("./routes/verifyToken");
 const getAllQuestions = require("./routes/getQuestions");
 const getAllAnswer = require("./routes/getAllUserAnswer");
 const Chat = require("./database/Models/chatModel");
+const deleteQuestion = require('./routes/deleteQuestion')
 const path = require("path");
 
 dbConnection();
@@ -43,6 +45,7 @@ app.use("/api/postAnswer", postAnswer);
 app.use("/api/postComment", postComment);
 app.use("/api/postUpVote", postUpVote);
 app.use("/api/postAnswerVote", postAnswerVote);
+app.use("/api/postCompiler", postCompiler);
 
 // api/postQuestion
 //get Request
@@ -53,6 +56,13 @@ app.use("/api/accessChat", accessChat);
 app.use("/api/getallchats", getallchats);
 app.use("/api/fetchmessages", fetchmessages);
 app.use("/api/sendmsg", sendmsg);
+
+
+// delete request
+app.use("/api/deleteQuestion", deleteQuestion);
+
+
+
 
 const server = http.createServer(app);
 const userSocketMap = {};
@@ -115,9 +125,9 @@ io.on("connection", (socket) => {
       });
     });
 
-    socket.on("code-change", ({ roomId, value }) => {
+    socket.on("code-change", ({ roomId, value, output }) => {
       console.log("value", value);
-      socket.in(roomId).emit("code-change", { value });
+      socket.in(roomId).emit("code-change", { value , output });
     });
 
     socket.on("sync-code", ({ socketId, code }) => {

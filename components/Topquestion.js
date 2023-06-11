@@ -75,8 +75,8 @@ export const Topquestion = ({ questions }) => {
               >
                 <Box
                   className="sideIcon"
-                  border={"1px"}
-                  borderColor="gray.300"
+                  // border={"1px"}
+                  // borderColor="gray.300"
                   p={"3"}
                   borderRadius="8px"
                   display="flex"
@@ -99,8 +99,8 @@ export const Topquestion = ({ questions }) => {
                   // border={"1px"}
                   className="sideIcon"
                   display="flex"
-                  border={"1px"}
-                  borderColor="gray.300"
+                  // border={"1px"}
+                  // borderColor="gray.300"
                   p={"3"}
                   borderRadius="8px"
                   flexDirection={"column"}
@@ -117,8 +117,8 @@ export const Topquestion = ({ questions }) => {
                   className="sideIcon"
                   // border={"1px"}
                   display="flex"
-                  border={"1px"}
-                  borderColor="gray.300"
+                  // border={"1px"}
+                  // borderColor="gray.300"
                   p={"3"}
                   borderRadius="8px"
                   flexDirection={"column"}

@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
-import { Collapse, Button } from "@chakra-ui/react";
+import { Collapse, Button, Tooltip } from "@chakra-ui/react";
 import { Answers } from "../components/Answer";
-import { BsFillSuitHeartFill } from "react-icons/bs";
+import { BsArrowDownCircle, BsArrowUpCircle, BsFillSuitHeartFill } from "react-icons/bs";
 <link
   href="https://cdn.quilljs.com/1.0.0/quill.snow.css"
   rel="stylesheet"
@@ -23,6 +23,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -33,6 +34,8 @@ import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import { MdFavoriteBorder } from "react-icons/md";
 import { TimeIcon, EditIcon, DeleteIcon, ViewIcon } from "@chakra-ui/icons";
 import { Texteditor } from "../Components/Texteditor.js";
+import { RiArrowUpCircleFill } from "react-icons/ri";
+import { useRouter } from "next/router";
 export default function Home({ isPosted, question_id, Allanswer }) {
   const toast = useToast();
   const user = useSelector((state) => state.userReducer.currentUser);
@@ -43,6 +46,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
   const [upVote, setupVote] = useState(false);
   const [downVote, setdownVote] = useState(false);
   const [disableVotes, setdisableVotes] = useState(false);
+  const Router= useRouter();
 
   const editHandler = () => {
     // console.log("Edit button");
@@ -162,6 +166,29 @@ export default function Home({ isPosted, question_id, Allanswer }) {
       });
   };
 
+
+  const handleQuestionDelete =(key)=>{
+    console.log('delete' , key)
+    axios.delete(`${process.env.NEXT_PUBLIC_Host_URL}api/deleteQuestion/${key}`)
+    .then(response => {
+      console.log('Item deleted successfully.' , response);
+      if(response.data.success){
+        toast({
+          title: 'Question deleted successfully',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        })
+        Router.push('/topquestion');
+      }
+      // Perform any additional actions upon successful deletion
+    })
+    .catch(error => {
+      console.error('Error deleting item:', error);
+      // Handle any errors that occurred during deletion
+    });
+  }
+
   return (
     <>
       {Allanswer && (
@@ -246,35 +273,40 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                   my={"auto"}
                   mx={"4"}
                   // mt={"4"}
-                  height={"200px"}
+                  // height={"200px"}
+                  gap={'1rem'}
                 >
+                   <Tooltip label="up vote" >
                   <Button variant={"none"} isDisabled={disableVotes}>
-                    <ImArrowUp2
-                      fontSize={"1.5rem"}
+                    <BsArrowUpCircle
+                      fontSize={"2rem"}
                       fontWeight={"bold"}
                       fill={upVote ? "purple" : "black"}
                       onClick={() => handleupVote(Allanswer[0]._id, "upVote")}
                       className="ArrowUp"
                     />
                   </Button>
-                  <Text fontWeight={"semibold"}>
+                  </Tooltip>
+                  <Text fontSize={'1.5rem'} fontWeight={"semibold"}>
                     {Allanswer[0].question_id
                       ? Allanswer[0].question_id.upVote.length -
                         Allanswer[0].question_id.downVote.length
                       : Allanswer[0].upVote.length -
                         Allanswer[0].downVote.length}
                   </Text>
+                  <Tooltip label="down vote" >
                   <Button isDisabled={disableVotes} variant={"none"}>
-                    <ImArrowDown2
-                      fontSize={"1.5rem"}
+                    <BsArrowDownCircle
+                      fontSize={"2rem"}
                       fontWeight={"bold"}
-                      fill={downVote ? "purple" : "black"}
+                      fill={downVote ? "red" : "gray"}
                       className="ArrowUp"
                       onClick={() => handleupVote(Allanswer[0]._id, "downVote")}
                     />
                   </Button>
+                  </Tooltip>
                   <BsFillSuitHeartFill
-                    size={"25px"}
+                    size={"35px"}
                     color="lightgray"
                     className="heartIcon"
                     // style={{   color: "#635DFF" }}
@@ -283,7 +315,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
 
                 <Flex
                   // border={"1px"}
-                  w={"90%"}
+                  // w={"90%"}
                   direction={"column"}
                   justify="center"
                 >
@@ -293,12 +325,12 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                       : Allanswer[0].question_id.title}
                   </Heading>
                   <Box
-                    width={"90%"}
+                    // width={"90%"}
                     bg="gray.50"
                     padding={"4"}
                     borderRadius={"8"}
                   >
-                    <Box p={"0.5rem"}>
+                    <Box P='1rem'>
                       {Allanswer[0].description
                         ? ReactHtmlParser(Allanswer[0].description)
                         : ReactHtmlParser(Allanswer[0].question_id.description)}
@@ -366,6 +398,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                     justifyContent="center"
                     alignItems={"center"}
                     className="editIcon2"
+                    onClick={()=>handleQuestionDelete(question_id)}
                   >
                     <DeleteIcon />
                     <Text ml={"1"}>Delete</Text>
