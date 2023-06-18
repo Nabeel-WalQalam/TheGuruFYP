@@ -123,7 +123,10 @@ socket.on("endSession",async(payload,cb)=>{
     cb({msg:"Network Error",success:false})
   }
 })
-
+socket.on("chat approved",async(payload)=>{
+ console.log("payload",payload)
+ socket.to(payload.user_id).emit("chatapprovedrecive",payload.chat_id);
+})
 
 
   socket.on("chatrequest",async(payload,callback)=>{

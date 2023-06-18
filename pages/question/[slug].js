@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Question from "../../components/Question";
 import { Spinner, Text, Flex } from "@chakra-ui/react";
+import Loader from "../../Loader";
 
 const Slug = () => {
   const router = useRouter();
@@ -66,8 +67,7 @@ const Slug = () => {
             justify={"center"}
             align="center"
           >
-            <Spinner size="xl" thickness="15px" />
-            <Text>Loading</Text>
+              <Loader />
           </Flex>
         </>
       )}

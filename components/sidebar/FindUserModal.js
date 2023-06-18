@@ -13,8 +13,9 @@ import SUprofile from './SUprofile'
 import Loader from '../../Loader'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { ADD_NEW_CHAT } from '../../redux/reducers/chat-reducer'
+import { ADD_NEW_CHAT, updateChatSession } from '../../redux/reducers/chat-reducer'
 import { removechatrequests } from '../../redux/reducers/user-reducer'
+import {socket} from "../../components/socketWrapper"
 function FindUserModal({ children }) {
   const dispatch = useDispatch()
 
@@ -69,7 +70,6 @@ function FindUserModal({ children }) {
   // }
 
   const handleApprove = (user_id) => {
-
     axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/updatesessionStatus`, { user_id }, { headers: { token: localStorage.getItem('token') } })
       .then(res => {
         console.log(res);
@@ -80,10 +80,14 @@ function FindUserModal({ children }) {
           })
           dispatch(removechatrequests(user_id))
           if (findChat) {
+            console.log(findChat)
+            socket.emit("chat approved",{user_id,chat_id:findChat._id})
+            dispatch(updateChatSession({_id:findChat._id,status:true}))
 
           }
           else {
             dispatch(ADD_NEW_CHAT({ newChat: res.data.payload }))
+            
 
           }
           toast({
@@ -145,7 +149,7 @@ function FindUserModal({ children }) {
                   <Text fontWeight="bold">{r.name}</Text>
                 </Box>
                 <Flex ml="auto">
-                  <Button mr="2" colorScheme="green" size="sm" border={"none"} onClick={() => handleApprove(r._id)}>
+                  <Button mr="2" colorScheme="green" size="sm" border={"none"} onClick={() => handleApprove(r._id,r)}>
                     Approve
                   </Button>
                   <Button colorScheme="red" size="sm" border={"none"}>

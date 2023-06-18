@@ -62,10 +62,18 @@ function SocketWrapper({ children }) {
 
         socket.on("sessionEnded", (payload) => {
             dispatch(updateChatSession({ _id: payload.chat_id, status: false }))
-            if (activeChatRef.current._id === payload.chat_id)
+            if (activeChatRef?.current?._id === payload.chat_id)
                 dispatch(SET_ACTIVE_CHAT({ chat: { ...activeChatRef.current, sessionStatus: false } }))
 
         })
+        socket.on("chatapprovedrecive", (payload) => {
+            dispatch(updateChatSession({ _id: payload, status: true }))
+            if (activeChatRef?.current?._id === payload)
+                dispatch(SET_ACTIVE_CHAT({ chat: { ...activeChatRef.current, sessionStatus: true } }))
+
+        })
+
+        
 
         return () => {
             socket.off("connect");
@@ -73,6 +81,8 @@ function SocketWrapper({ children }) {
             socket.off("chatRequestReceive")
             socket.off("disconnect")
             socket.off("sessionEnded")
+            socket.off("chatapprovedrecive")
+            
 
             socket.disconnect()
         }
