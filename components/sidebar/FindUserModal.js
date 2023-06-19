@@ -13,7 +13,7 @@ import SUprofile from './SUprofile'
 import Loader from '../../Loader'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { ADD_NEW_CHAT, updateChatSession } from '../../redux/reducers/chat-reducer'
+import { ADD_NEW_CHAT, SET_ACTIVE_CHAT, updateChatSession } from '../../redux/reducers/chat-reducer'
 import { removechatrequests } from '../../redux/reducers/user-reducer'
 import {socket} from "../../components/socketWrapper"
 function FindUserModal({ children }) {
@@ -24,6 +24,7 @@ function FindUserModal({ children }) {
   const [searchUsers, setsearchUsers] = useState([])
   const user = useSelector((state) => state.userReducer.currentUser)
   const { chatsList } = useSelector((state) => state.chatReducer)
+  const activeChat = useSelector((state) => state.chatReducer.activeChat)
 
   const toast = useToast();
 
@@ -81,8 +82,12 @@ function FindUserModal({ children }) {
           dispatch(removechatrequests(user_id))
           if (findChat) {
             console.log(findChat)
+            console.log("activeChat",activeChat)
             socket.emit("chat approved",{user_id,chat_id:findChat._id})
             dispatch(updateChatSession({_id:findChat._id,status:true}))
+            if (activeChat?._id === findChat._id)
+            {console.log("inside if")
+              dispatch(SET_ACTIVE_CHAT({ chat: { ...activeChat, sessionStatus: true } }))}
 
           }
           else {
@@ -142,7 +147,7 @@ function FindUserModal({ children }) {
             </InputGroup> */}
 
 
-            {user.chatRequests.length > 0 ? user.chatRequests.map((r, i) => {
+            {user?.chatRequests?.length > 0 ? user.chatRequests.map((r, i) => {
               return <Flex alignItems="center" mb={"10px"}>
                 <Avatar size="md" name={r.name} src={r.profileImage} />
                 <Box ml="4">

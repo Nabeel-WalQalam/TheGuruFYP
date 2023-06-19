@@ -29,7 +29,6 @@ const Slug = () => {
               }
             )
             .then(function (response) {
-              console.log("data", response.data.payload);
               setAllanswer(response.data.payload);
               setisAnswerPost(false);
             });

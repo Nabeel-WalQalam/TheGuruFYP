@@ -88,19 +88,28 @@ function getAllConnectedClients(roomId) {
   );
 }
 
+let onlineUsers=[];
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
+  socket.on("disconnecting",()=>{
+    let [temp,room]=socket.rooms
+    onlineUsers=onlineUsers.filter(c=> c !== room);
+    socket.broadcast.emit("onlineUsers", onlineUsers);
+  })
 
-  socket.on("setup", (user_id) => {
+  socket.on("setup", (user_id,cb) => {
     console.log("setup");
     socket.join(user_id);
-    // let [temp,rooms]=socket.rooms
-    // console.log(rooms)
+    console.log(onlineUsers)
+    onlineUsers.push(user_id)
+ 
+    socket.broadcast.emit("onlineUsers",onlineUsers)
     socket.emit("user joined the room", {
       user_id,
       onlineUsers: socket.onlineUsers,
     });
     socket.broadcast.emit("i am online", user_id);
+    cb(onlineUsers)
   });
 
   socket.on("new message", (message) => {
@@ -194,6 +203,7 @@ else{
 
     socket.on("disconnecting", () => {
       const rooms = [...socket.rooms];
+      
       rooms.forEach((roomId) => {
         console.log("a user disconnect");
         io.in(roomId).emit("disconnected", {
