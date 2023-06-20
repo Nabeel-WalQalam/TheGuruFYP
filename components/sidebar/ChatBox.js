@@ -117,7 +117,6 @@ function ChatBox({ onToggle, setopenChatbox, openChatbox }) {
 
 
     }
-    console.log(activeChat)
 
     const handleEndSession=()=>{
         if(activeChat.sessionStatus === false){

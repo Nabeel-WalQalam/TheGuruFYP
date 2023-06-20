@@ -6,7 +6,7 @@ import SideBar from "../components/sidebar/SideBar";
 import store from "../redux/store";
 import { Provider, useDispatch } from "react-redux";
 import axios from "axios";
-
+import Loader from "../Loader"
 import { setCurrentUser } from "../redux/reducers/user-reducer";
 
 import React, { useEffect, useState } from "react";
@@ -53,8 +53,8 @@ function MyApp({ Component, pageProps }) {
           justify={"center"}
           align="center"
         >
-          <Spinner size="xl" thickness="15px" />
-          <Text>Loading</Text>
+
+          <Loader />
         </Flex>
       ) : (
         <ChakraProvider

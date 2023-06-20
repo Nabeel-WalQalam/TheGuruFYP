@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT, SET_CHATS_LIST, UPDATE_CHAT_BADGE, updateChatSession } from '../redux/reducers/chat-reducer';
+import { APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT, SET_CHATS_LIST, UPDATE_CHAT_BADGE, UpdateOnlineStatus, updateChatSession } from '../redux/reducers/chat-reducer';
 import io from "socket.io-client";
 import { useRef } from 'react';
 import { updatechatrequests } from '../redux/reducers/user-reducer';
@@ -16,7 +16,7 @@ function SocketWrapper({ children }) {
     const user = useSelector(state => state.userReducer.currentUser)
     const chatsList = useSelector(state => state.chatReducer.chatsList)
     const activeChatRef = useRef();
-
+// console.log(chatsList)
     useEffect(() => {
         activeChatRef.current = activeChat
 
@@ -50,7 +50,12 @@ function SocketWrapper({ children }) {
 
         socket.on("connect", (id) => {
             console.log("connected")
-            socket.emit("setup", user._id);
+            socket.emit("setup", user._id,(payload)=>{
+                // console.log(payload)
+                dispatch(UpdateOnlineStatus(payload))
+
+                
+            });
         })
         socket.on("disconnect", () => { console.log("disocnnected") })
 
@@ -62,10 +67,25 @@ function SocketWrapper({ children }) {
 
         socket.on("sessionEnded", (payload) => {
             dispatch(updateChatSession({ _id: payload.chat_id, status: false }))
-            if (activeChatRef.current._id === payload.chat_id)
+            if (activeChatRef?.current?._id === payload.chat_id)
                 dispatch(SET_ACTIVE_CHAT({ chat: { ...activeChatRef.current, sessionStatus: false } }))
 
         })
+        socket.on("chatapprovedrecive", (payload) => {
+            dispatch(updateChatSession({ _id: payload, status: true }))
+            if (activeChatRef?.current?._id === payload)
+                dispatch(SET_ACTIVE_CHAT({ chat: { ...activeChatRef.current, sessionStatus: true } }))
+
+        })
+        socket.on("onlineUsers", (payload) => {
+          
+            // console.log("onlineUsers",payload);
+            dispatch(UpdateOnlineStatus(payload))
+
+        })
+        
+
+        
 
         return () => {
             socket.off("connect");
@@ -73,6 +93,10 @@ function SocketWrapper({ children }) {
             socket.off("chatRequestReceive")
             socket.off("disconnect")
             socket.off("sessionEnded")
+            socket.off("chatapprovedrecive")
+            socket.off("onlineUsers")
+            
+            
 
             socket.disconnect()
         }
