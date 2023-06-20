@@ -11,9 +11,8 @@ import {
   Text,
   Select,
   Spinner,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
-
 
 import { useRouter } from "next/router";
 import { BsFillPlayCircleFill } from "react-icons/bs";
@@ -21,14 +20,14 @@ import AvatarCard from "../../components/AvatarCard";
 import { initSocket } from "../../socket";
 import { basicSetup } from "codemirror";
 // import { basicSetup } from "@codemirror/basic-setup";
-import { EditorView  } from "@codemirror/view";
-import { vscodeDark  } from "@uiw/codemirror-theme-vscode";
+import { EditorView } from "@codemirror/view";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { oneDark } from "@codemirror/theme-one-dark";
-import {  autoCloseTags, javascript } from "@codemirror/lang-javascript";
+import { autoCloseTags, javascript } from "@codemirror/lang-javascript";
 import { cpp, cppLanguage } from "@codemirror/lang-cpp";
 import { keymap } from "@codemirror/view";
 import { defaultKeymap } from "@codemirror/commands";
-import  {autocompletion}  from "@codemirror/autocomplete";
+import { autocompletion } from "@codemirror/autocomplete";
 
 import { highlightSelectionMatches } from "@codemirror/search";
 import { bracketMatching } from "@codemirror/matchbrackets";
@@ -36,22 +35,21 @@ import { foldGutter, foldKeymap } from "@codemirror/fold";
 import { commentKeymap } from "@codemirror/comment";
 import { lint } from "@codemirror/lint";
 import { python, pythonLanguage } from "@codemirror/lang-python";
-import { styleTags } from '@codemirror/highlight';
+import { styleTags } from "@codemirror/highlight";
 import { onUpdate } from "../../components/Update";
 import axios from "axios";
 export default function EditorCom() {
-
   const editor = useRef(null);
   const [client, setClient] = useState([]);
   const router = useRouter();
   const roomId = router.query.roomid;
   const [view, setView] = useState();
-  const [code, setcode] = useState('');
-  const [Language, SetLanguage] = useState('')
-  const [output, setoutput] = useState('')
-  const [error, seterror] = useState('')
-  const [loading, setloading] = useState(false)
-  const [UserInput, setUserInput] = useState('')
+  const [code, setcode] = useState("");
+  const [Language, SetLanguage] = useState("");
+  const [output, setoutput] = useState("");
+  const [error, seterror] = useState("");
+  const [loading, setloading] = useState(false);
+  const [UserInput, setUserInput] = useState("");
   const toast = useToast();
 
   // const basicKeymap = keymap.of(defaultKeymap);
@@ -105,11 +103,11 @@ export default function EditorCom() {
         // toast.success(`${username} left the room.`);
         console.log(`${username} left`);
         toast({
-          title: 'User left',
-          status: 'success',
+          title: "User left",
+          status: "success",
           duration: 3000,
           isClosable: true,
-        })
+        });
         setClient((prev) => {
           return prev.filter((client) => client.socketId !== socketId);
         });
@@ -130,9 +128,10 @@ export default function EditorCom() {
   }, []);
 
   useEffect(() => {
-    const handleCodeChange = ({ value, output }) => {
+    const handleCodeChange = ({ value, output, Language }) => {
       // console.log(value);
-setoutput(output)
+      setoutput(output);
+      SetLanguage(Language);
       const editorValue = view.state.doc.toString();
       if (value !== editorValue) {
         view.dispatch({
@@ -158,16 +157,16 @@ setoutput(output)
     const view = new EditorView({
       extensions: [
         basicSetup,
-    cpp(),
-    python(),
-    pythonLanguage,
-    cppLanguage,
-    vscodeDark,
-    // oneDark,
-    highlightSelectionMatches(),
-  
+        cpp(),
+        python(),
+        pythonLanguage,
+        cppLanguage,
+        vscodeDark,
+        // oneDark,
+        highlightSelectionMatches(),
+
         javascript({
-          jsx:true
+          jsx: true,
         }),
         // styleTags(),
         onUpdate(handleChange),
@@ -190,11 +189,12 @@ setoutput(output)
   const handleChange = (value, viewUpdate) => {
     coderef.current = value;
     // console.log(value)
-    setcode(value)
+    setcode(value);
     socketRef.current.emit("code-change", {
       roomId,
       value,
-      output
+      output,
+      Language,
     });
   };
 
@@ -206,83 +206,79 @@ setoutput(output)
   const handleCopy = () => {
     navigator.clipboard.writeText(roomId);
     toast({
-      title: 'Room id copy successfully',
-      status: 'success',
+      title: "Room id copy successfully",
+      status: "success",
       duration: 3000,
       isClosable: true,
-    })
+    });
   };
 
-
-  const handleCodeSubmit = async()=>{
-    if(Language == ''){
+  const handleCodeSubmit = async () => {
+    if (Language == "") {
       toast({
-        title: 'Please Select language',
-        status: 'warning',
+        title: "Please Select language",
+        status: "warning",
         duration: 3000,
         isClosable: true,
-      })
+      });
       return;
-    }else if(code == ''){
+    } else if (code == "") {
       toast({
-        title: 'Please write the correct code',
-        status: 'warning',
+        title: "Please write the correct code",
+        status: "warning",
         duration: 3000,
         isClosable: true,
-      })
+      });
       return;
-    }
-    
-    else{
-// console.log(code)
+    } else {
+      // console.log(code)
 
       try {
-
-        setloading(true)
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/postCompiler`, {
-          code: code,
-          languange:Language,
-          userInput:UserInput,
-        });
+        setloading(true);
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_Host_URL}api/postCompiler`,
+          {
+            code: code,
+            languange: Language,
+            userInput: UserInput,
+          }
+        );
         // console.log(response)
-        if(response.data.output.output){
-          console.log(response.data.output)
-          setoutput(response.data.output.output)
+        if (response.data.output.output) {
+          console.log(response.data.output);
+          setoutput(response.data.output.output);
           toast({
-            title: 'Program run successfully',
-            status: 'success',
+            title: "Program run successfully",
+            status: "success",
             duration: 3000,
             isClosable: true,
-          })
+          });
+          setloading(false);
           return;
-        }else{
-          console.log('error',response.data.output)
-          setoutput(response.data.output.error)
+        } else {
+          setloading(false);
+          console.log("error", response.data.output);
+          setoutput(response.data.output.error);
           toast({
-            title: 'Some error occured',
-            status: 'error',
+            title: "Some error occured",
+            status: "error",
             duration: 3000,
             isClosable: true,
-          })
+          });
           return;
         }
-        setloading(false)
+
         // Handle the response from the backend if needed
       } catch (error) {
-        console.log('error' , error)
-        setloading(false)
+        console.log("error", error);
+        setloading(false);
         // Handle any error that occurs during the request
       }
-
     }
     // console.log(code , Language)
-
-   
-
-  }
+  };
   return (
     <>
-   
       <Flex border={"1px"} borderColor="dark blue">
         <Flex
           direction={"column"}
@@ -290,7 +286,6 @@ setoutput(output)
           // height={"100%"}
         >
           <Box width={"100%"}>
-          
             <Box
               border={"1px"}
               // borderColor="white"
@@ -302,18 +297,17 @@ setoutput(output)
             <Flex
               // height={"70%"}
               bg={"#282A36"}
-
             >
-              <Flex  justify={"center"} align="center">
-                <Box  py='1rem' >
+              <Flex justify={"center"} align="center">
+                <Box py="1rem">
                   <Select
-                  ml={'1rem'}
-                  pos={'relative'}
+                    ml={"1rem"}
+                    pos={"relative"}
                     placeholder="Select Language"
                     color={"grey"}
                     fontWeight="bold"
                     required
-                    onChange={(e)=>SetLanguage(e.target.value)}
+                    onChange={(e) => SetLanguage(e.target.value)}
                   >
                     <option color="black" value="c++">
                       C++
@@ -326,86 +320,81 @@ setoutput(output)
                     </option> */}
                   </Select>
                 </Box>
-                {
-                  loading ? <Spinner/> :
-
+                {loading ? (
+                  <Spinner />
+                ) : (
                   <>
-                  <Tooltip label="Run Code">
-                  <Button
-                  variant={'none'}
-                    position={"absolute"}
-                    // bottom="12rem"
-                    right={"20rem"}
-                    border={'none'}
-                    borderRadius={'none'}
-                    _hover={{
-                    
-                      // borderRadius: "50%",
-                      // boxShadow: "0 0 40px #524DFF",
-                      cursor: "pointer",
-                    }}
-                    
-                  >
-                    <BsFillPlayCircleFill
-                      fill="#524DFF"
-                      size={"50px"}
-                        onClick={() => {
-                          handleCodeSubmit()
+                    <Tooltip label="Run Code">
+                      <Button
+                        variant={"none"}
+                        position={"absolute"}
+                        // bottom="12rem"
+                        right={"20rem"}
+                        border={"none"}
+                        borderRadius={"none"}
+                        _hover={{
+                          // borderRadius: "50%",
+                          // boxShadow: "0 0 40px #524DFF",
+                          cursor: "pointer",
                         }}
-                        
-                        
-                    />
-                  </Button>
-                </Tooltip>
+                      >
+                        <BsFillPlayCircleFill
+                          fill="#524DFF"
+                          size={"50px"}
+                          onClick={() => {
+                            handleCodeSubmit();
+                          }}
+                        />
+                      </Button>
+                    </Tooltip>
                   </>
-                }
-                
+                )}
               </Flex>
             </Flex>
           </Box>
-          <Flex justify={'space-between'}
+          <Flex
+            justify={"space-between"}
             // border={"5px"}
             //  borderColor="green"
             height="35%"
             bg={"#1c1e29"}
           >
-            <Box width={'50%'}>
-            <Heading size={"lg"} mt="0.5rem" ml={"0.5rem"} color={"white"}>
-              Output
-            </Heading>
-            <Text
-              //   ml={"6rem"}
-              mt="0.5rem"
-              p={"1rem"}
-              color={"white"}
-              //  border="1px"
-              width={'100%'}
-              height={'inherit'}
-              bg="grey"
-            >
-
-{ error != '' ? error : output}
-
-            </Text>
+            <Box width={"50%"}>
+              <Heading size={"lg"} mt="0.5rem" ml={"0.5rem"} color={"white"}>
+                Output
+              </Heading>
+              <Text
+                //   ml={"6rem"}
+                mt="0.5rem"
+                p={"1rem"}
+                color={"white"}
+                //  border="1px"
+                width={"100%"}
+                height={"inherit"}
+                bg="grey"
+              >
+                {output}
+              </Text>
             </Box>
-            <Box width={'45%'}>
-            <Heading size={"lg"} mt="0.5rem" ml={"0.5rem"} color={"white"}>
-             Compile with Input
-            </Heading>
-            <Textarea
-             mt="0.5rem"
-             p={"1rem"}
-             onChange={(e)=>setUserInput(e.target.value)}
-             color={"white"}
-             //  border="1px"
-             placeholder="enter the user input if have"
-            //  bg="grey"
-            /></Box>
+            <Box width={"45%"}>
+              <Heading size={"lg"} mt="0.5rem" ml={"0.5rem"} color={"white"}>
+                Compile with Input
+              </Heading>
+              <Textarea
+                mt="0.5rem"
+                p={"1rem"}
+                onChange={(e) => setUserInput(e.target.value)}
+                color={"white"}
+                //  border="1px"
+                placeholder="enter the user input if have"
+                //  bg="grey"
+              />
+            </Box>
           </Flex>
         </Flex>
         <Box
           bg={"gray.900"}
-            // border={"1px"}
+          // border={"1px"}
           // width="20%"
           height={"90.4vh"}
           //   borderColor="#524DFF"
@@ -417,7 +406,7 @@ setoutput(output)
             direction={"column"}
             justify="space-between"
             align={"center"}
-            px='1rem'
+            px="1rem"
           >
             <Box
               color={"white"}
@@ -451,7 +440,12 @@ setoutput(output)
                 })}
               </Flex>
             </Box>
-            <Flex gap={'1rem'} justify={"space-evenly"} width="100%" mb={"2rem"}>
+            <Flex
+              gap={"1rem"}
+              justify={"space-evenly"}
+              width="100%"
+              mb={"2rem"}
+            >
               <Button
                 onClick={handleCopy}
                 colorScheme={"green"}
@@ -466,9 +460,6 @@ setoutput(output)
           </Flex>
         </Box>
       </Flex>
-      
-      
-    
     </>
   );
 }
