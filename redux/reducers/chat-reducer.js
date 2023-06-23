@@ -36,10 +36,8 @@ export const chatReducer = createSlice({
         },
 
         UPDATE_CHAT_BADGE: (state, action) => {
-            console.log("in reducer")
             const newList = state.chatsList.map((chat) => {
                 if (chat._id === action.payload.chat_id) {
-                    console.log("found")
 
                     if (action.payload.badge === 0) // update badge value to Zero
                         return { ...chat, badge: 0 }
@@ -56,7 +54,6 @@ export const chatReducer = createSlice({
             state.apiLoading = action.payload
         },
         updateChatSession:(state,action)=>{
-            console.log("in",action)
             const newState= state.chatsList.map((c)=>{
                 if(c._id === action.payload._id)
                 return {...c,sessionStatus:action.payload.status}
@@ -65,14 +62,30 @@ export const chatReducer = createSlice({
 
             })
             state.chatsList= newState;
-        }
+        },
+
+        UpdateOnlineStatus: (state, action) => {
+            console.log("here")
+            console.log(action.payload)
+            state.chatsList=state.chatsList.map((c)=>{
+
+                const filter = action.payload.filter(c=> c===c._id)
+                if(filter.length > 0){
+                    return {...c,onlineStatus:true}
+                }
+                return {...c,onlineStatus:false}
+
+            })
+            
+            console.log(state.chatsList)
+        },
 
 
 
     },
 });
 
-export const { SET_API_LOADING, UPDATE_CHAT_BADGE, ADD_NEW_CHAT, APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST, SET_ACTIVE_CHAT,updateChatSession } = chatReducer.actions;
+export const { SET_API_LOADING, UPDATE_CHAT_BADGE, ADD_NEW_CHAT, APPEND_ACTIVE_CHAT_MESSAGES, SET_ACTIVE_CHAT_MESSAGES, SET_CHATS_LIST, SET_ACTIVE_CHAT,updateChatSession ,UpdateOnlineStatus} = chatReducer.actions;
 
 
 
@@ -85,7 +98,6 @@ export const fetchMessages = (payload) => (dispatch) => {
     axios.get(`${process.env.NEXT_PUBLIC_Host_URL}api/fetchmessages`, { headers: { token: token, chat_id } })
         .then(res => {
 
-            // console.log(res);
             if (res.data.success) {
                 dispatch(SET_ACTIVE_CHAT_MESSAGES({ messages: res.data.payload }))
                 dispatch(SET_API_LOADING(false))

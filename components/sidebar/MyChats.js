@@ -28,7 +28,8 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
   const sliceLatestmsg = (msg) => {
     return msg.slice(0, 24)
   }
-  // console.log(chat)
+  console.log(chat)
+
   return (
     <>
 
@@ -103,8 +104,7 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
                 color={'red.500'}
               />
                 <Text fontSize={"12px"}>
-                  {/* {onlineStatus} */}
-                  Offline
+                  {chat?.onlineStatus ? "Online" : "Offline"}
                 </Text>
               </>
             </HStack>

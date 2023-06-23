@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const { Socket } = require("socket.io-client");
 const dbConnection = require("./database/connection");
-const userModel = require("./database/Models/userModel");
+const userModel = require("./database/Models/userModel")
 
 const createuser = require("./routes/createuser");
 const loginuser = require("./routes/loginuser");
@@ -27,7 +27,7 @@ const verifyToken = require("./routes/verifyToken");
 const getAllQuestions = require("./routes/getQuestions");
 const getAllAnswer = require("./routes/getAllUserAnswer");
 const Chat = require("./database/Models/chatModel");
-const deleteQuestion = require("./routes/deleteQuestion");
+const deleteQuestion = require('./routes/deleteQuestion')
 const path = require("path");
 const chatModel = require("./database/Models/chatModel");
 
@@ -61,8 +61,12 @@ app.use("/api/fetchmessages", fetchmessages);
 app.use("/api/updatesessionStatus", updatesessionStatus);
 app.use("/api/sendmsg", sendmsg);
 
+
 // delete request
 app.use("/api/deleteQuestion", deleteQuestion);
+
+
+
 
 const server = http.createServer(app);
 const userSocketMap = {};
@@ -84,19 +88,28 @@ function getAllConnectedClients(roomId) {
   );
 }
 
+let onlineUsers=[];
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
+  socket.on("disconnecting",()=>{
+    let [temp,room]=socket.rooms
+    onlineUsers=onlineUsers.filter(c=> c !== room);
+    socket.broadcast.emit("onlineUsers", onlineUsers);
+  })
 
-  socket.on("setup", (user_id) => {
+  socket.on("setup", (user_id,cb) => {
     console.log("setup");
     socket.join(user_id);
-    // let [temp,rooms]=socket.rooms
-    // console.log(rooms)
+    console.log(onlineUsers)
+    onlineUsers.push(user_id)
+ 
+    socket.broadcast.emit("onlineUsers",onlineUsers)
     socket.emit("user joined the room", {
       user_id,
       onlineUsers: socket.onlineUsers,
     });
     socket.broadcast.emit("i am online", user_id);
+    cb(onlineUsers)
   });
 
   socket.on("new message", (message) => {
@@ -108,57 +121,59 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("endSession", async (payload, cb) => {
-    try {
-      await chatModel.findByIdAndUpdate(
-        { _id: payload.chat_id },
-        { sessionStatus: false }
-      );
-      cb({ msg: "Session Ended", success: true });
-      socket
-        .to(payload.user_id)
-        .emit("sessionEnded", { chat_id: payload.chat_id });
-    } catch (error) {
-      cb({ msg: "Network Error", success: false });
-    }
-  });
+socket.on("endSession",async(payload,cb)=>{
+  try {
 
-  socket.on("chatrequest", async (payload, callback) => {
+    await chatModel.findByIdAndUpdate({_id:payload.chat_id},{sessionStatus:false})
+    cb({msg:"Session Ended",success:true})
+    socket.to(payload.user_id).emit("sessionEnded",{chat_id:payload.chat_id})
+    
+  } catch (error) {
+    cb({msg:"Network Error",success:false})
+  }
+})
+socket.on("chat approved",async(payload)=>{
+ console.log("payload",payload)
+ socket.to(payload.user_id).emit("chatapprovedrecive",payload.chat_id);
+})
+
+
+  socket.on("chatrequest",async(payload,callback)=>{
     try {
       const chatExists = await chatModel.exists({
         $and: [
           { users: { $all: [payload.user_id, payload.fromUser._id] } },
-          { users: { $size: 2 } },
-        ],
+          { users: { $size: 2 } }
+        ]
       });
-      if (chatExists) {
-        const r = await chatModel.findById({ _id: chatExists._id });
-        if (r.sessionStatus === true) {
-          callback({ msg: "Request Already Approved", success: false });
+      if(chatExists){
+        const r= await chatModel.findById({_id:chatExists._id});
+        if(r.sessionStatus === true)
+        {
+          callback({msg:"Request Already Approved",success:false})
           return;
+          
         }
       }
-      console.log("after return ");
-      const res = await userModel.findOne({
-        _id: payload.user_id,
-        chatRequests: { $elemMatch: { _id: payload.fromUser._id } },
-      });
+      console.log("after return ")
+const res=await userModel.findOne({_id:payload.user_id,chatRequests: { $elemMatch: { _id: payload.fromUser._id } },})
 
-      if (res === null) {
-        await userModel.findByIdAndUpdate(
-          { _id: payload.user_id },
-          { $push: { chatRequests: payload.fromUser } }
-        );
-        socket.to(payload.user_id).emit("chatRequestReceive", payload.fromUser);
-        callback({ msg: "Request Sent", success: true });
-      } else {
-        callback({ msg: "Aready Requested", success: false });
-      }
+if(res === null){
+      await userModel.findByIdAndUpdate({_id:payload.user_id},
+  {$push:{chatRequests:payload.fromUser}}
+)
+socket.to(payload.user_id).emit("chatRequestReceive",payload.fromUser)
+callback({msg:"Request Sent",success:true})
+}
+else{
+  callback({msg:"Aready Requested",success:false})
+}
     } catch (error) {
-      console.log("error");
-      console.log(error);
+      console.log("error")
+      console.log(error)
     }
-  });
+
+  })
 
   socket.on("join", ({ roomId, username }) => {
     //get the username... to room
@@ -177,9 +192,9 @@ io.on("connection", (socket) => {
       });
     });
 
-    socket.on("code-change", ({ roomId, value, output, Language }) => {
+    socket.on("code-change", ({ roomId, value, output }) => {
       console.log("value", value);
-      socket.in(roomId).emit("code-change", { value, output, Language });
+      socket.in(roomId).emit("code-change", { value , output });
     });
 
     socket.on("sync-code", ({ socketId, code }) => {
@@ -188,6 +203,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnecting", () => {
       const rooms = [...socket.rooms];
+      
       rooms.forEach((roomId) => {
         console.log("a user disconnect");
         io.in(roomId).emit("disconnected", {
