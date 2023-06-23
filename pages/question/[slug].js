@@ -3,7 +3,6 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Question from "../../components/Question";
 import { Spinner, Text, Flex } from "@chakra-ui/react";
-import Loader from "../../Loader";
 
 const Slug = () => {
   const router = useRouter();
@@ -29,6 +28,7 @@ const Slug = () => {
               }
             )
             .then(function (response) {
+              console.log("data", response.data.payload);
               setAllanswer(response.data.payload);
               setisAnswerPost(false);
             });
@@ -66,7 +66,8 @@ const Slug = () => {
             justify={"center"}
             align="center"
           >
-              <Loader />
+            <Spinner size="xl" thickness="15px" />
+            <Text>Loading</Text>
           </Flex>
         </>
       )}

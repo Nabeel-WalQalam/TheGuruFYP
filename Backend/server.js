@@ -84,28 +84,19 @@ function getAllConnectedClients(roomId) {
   );
 }
 
-let onlineUsers=[];
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
-  socket.on("disconnecting",()=>{
-    let [temp,room]=socket.rooms
-    onlineUsers=onlineUsers.filter(c=> c !== room);
-    socket.broadcast.emit("onlineUsers", onlineUsers);
-  })
 
-  socket.on("setup", (user_id,cb) => {
+  socket.on("setup", (user_id) => {
     console.log("setup");
     socket.join(user_id);
-    console.log(onlineUsers)
-    onlineUsers.push(user_id)
- 
-    socket.broadcast.emit("onlineUsers",onlineUsers)
+    // let [temp,rooms]=socket.rooms
+    // console.log(rooms)
     socket.emit("user joined the room", {
       user_id,
       onlineUsers: socket.onlineUsers,
     });
     socket.broadcast.emit("i am online", user_id);
-    cb(onlineUsers)
   });
 
   socket.on("new message", (message) => {
@@ -133,21 +124,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chatrequest", async (payload, callback) => {
-    await chatModel.findByIdAndUpdate({_id:payload.chat_id},{sessionStatus:false})
-    cb({msg:"Session Ended",success:true})
-    socket.to(payload.user_id).emit("sessionEnded",{chat_id:payload.chat_id})
-    
-  } catch (error) {
-    cb({msg:"Network Error",success:false})
-  }
-})
-socket.on("chat approved",async(payload)=>{
- console.log("payload",payload)
- socket.to(payload.user_id).emit("chatapprovedrecive",payload.chat_id);
-})
-
-
-  socket.on("chatrequest",async(payload,callback)=>{
     try {
       const chatExists = await chatModel.exists({
         $and: [
@@ -212,7 +188,6 @@ socket.on("chat approved",async(payload)=>{
 
     socket.on("disconnecting", () => {
       const rooms = [...socket.rooms];
-      
       rooms.forEach((roomId) => {
         console.log("a user disconnect");
         io.in(roomId).emit("disconnected", {
