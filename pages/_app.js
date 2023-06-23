@@ -11,6 +11,7 @@ import { setCurrentUser } from "../redux/reducers/user-reducer";
 
 import React, { useEffect, useState } from "react";
 import SocketWrapper from "../components/socketWrapper";
+import Loader from "../Loader";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
@@ -53,8 +54,9 @@ function MyApp({ Component, pageProps }) {
           justify={"center"}
           align="center"
         >
-          <Spinner size="xl" thickness="15px" />
-          <Text>Loading</Text>
+          {/* <Spinner size="xl" thickness="15px" />
+          <Text>Loading</Text> */}
+          <Loader />
         </Flex>
       ) : (
         <ChakraProvider
