@@ -28,7 +28,6 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
   const sliceLatestmsg = (msg) => {
     return msg.slice(0, 24)
   }
-  console.log(chat)
 
   return (
     <>
@@ -100,8 +99,8 @@ function MyChats({ setopenChatbox, name, chat, activeChat }) {
               {/* {!chat.isGroupChat? <><CircleIcon boxSize="10px" color={onlineStatus==="Online"?'green.500':'red.500'} />
                         <Text fontSize={"12px"}>{onlineStatus}</Text></>:""} */}
               <><CircleIcon boxSize="10px"
-                // color={onlineStatus==="Online"?'green.500':'red.500'} 
-                color={'red.500'}
+                color={chat?.onlineStatus ?'green.500':'red.500'} 
+                // color={'red.500'}
               />
                 <Text fontSize={"12px"}>
                   {chat?.onlineStatus ? "Online" : "Offline"}

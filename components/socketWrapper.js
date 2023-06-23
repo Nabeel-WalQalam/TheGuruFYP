@@ -52,7 +52,10 @@ function SocketWrapper({ children }) {
             console.log("connected")
             socket.emit("setup", user._id,(payload)=>{
                 // console.log(payload)
-                dispatch(UpdateOnlineStatus(payload))
+                setTimeout(() => {
+                    
+                    dispatch(UpdateOnlineStatus(payload))
+                }, 3000);
 
                 
             });

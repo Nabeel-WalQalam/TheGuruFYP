@@ -65,19 +65,18 @@ export const chatReducer = createSlice({
         },
 
         UpdateOnlineStatus: (state, action) => {
-            console.log("here")
-            console.log(action.payload)
-            state.chatsList=state.chatsList.map((c)=>{
+           
+            
+            state.chatsList=state.chatsList.map((ch)=>{
+                const filter = action.payload.filter(c=> c===ch.users[0]._id)
 
-                const filter = action.payload.filter(c=> c===c._id)
                 if(filter.length > 0){
-                    return {...c,onlineStatus:true}
+                    return {...ch,onlineStatus:true}
                 }
-                return {...c,onlineStatus:false}
+                return {...ch,onlineStatus:false}
 
             })
             
-            console.log(state.chatsList)
         },
 
 
