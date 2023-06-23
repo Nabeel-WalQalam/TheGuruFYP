@@ -1,11 +1,13 @@
 import { Box, Button, Flex, Heading, Spacer } from "@chakra-ui/react";
 import Head from "next/head";
 import Link from "next/link";
-import LargeWithNewsletter from "../components/Footer"
-import WithSpeechBubbles from "../components/Testimonials"
-import BasicStatistics from "../components/Stats"
+import LargeWithNewsletter from "../components/Footer";
+import WithSpeechBubbles from "../components/Testimonials";
+import BasicStatistics from "../components/Stats";
 
-import Typed from 'react-typed';
+import Typed from "react-typed";
+import { Feature } from "../components/Feature";
+import Developer from "../components/Developer";
 export default function Home() {
   return (
     <>
@@ -73,22 +75,27 @@ export default function Home() {
           ></Box>
         </Box>
       </Flex>
-      {/* section 1 ended */}
+      <Box my={"1rem"} mt={"2rem"}>
+        <Feature />
+      </Box>
+      <Box my={"1rem"}>
+        <Developer />
+      </Box>
 
+      {/* section 1 ended */}
 
       {/* Stats */}
       <Box mb="150px">
-
-      <BasicStatistics/>
+        <BasicStatistics />
       </Box>
 
-{/* testimonials */}
-<Box mb="150px">
-<WithSpeechBubbles/>
-</Box>
+      {/* testimonials */}
+      <Box mb="150px">
+        <WithSpeechBubbles />
+      </Box>
 
       {/* footoer */}
-      <LargeWithNewsletter/>
+      <LargeWithNewsletter />
     </>
   );
 }
