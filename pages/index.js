@@ -5,7 +5,7 @@ import LargeWithNewsletter from "../components/Footer"
 import WithSpeechBubbles from "../components/Testimonials"
 import BasicStatistics from "../components/Stats"
 
-// import Typed from 'react-typed';
+import Typed from 'react-typed';
 export default function Home() {
   return (
     <>
@@ -36,13 +36,13 @@ export default function Home() {
                 display={"inline-block"}
               >
                 {" "}
-                {/* <Typed
+                <Typed
                   strings={["Developer", "Everyone"]}
                   typeSpeed={50}
                   backSpeed={70}
                   backDelay={2000}
                   loop
-                /> */}
+                />
               </Heading>
             </span>
             has
