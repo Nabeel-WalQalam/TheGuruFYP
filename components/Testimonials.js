@@ -83,11 +83,11 @@ const TestimonialAvatar = ({
 
 export default function WithSpeechBubbles() {
   return (
-    <Box bg={useColorModeValue('gray.100', 'gray.700')}>
+    <Box bg={"#EDF2F7"}>
       <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
         <Stack spacing={0} align={'center'}>
-          <Heading>Our Clients Speak</Heading>
-          <Text>We have been working with clients around the world</Text>
+          <Heading>Our Users Speak</Heading>
+          
         </Stack>
         <Stack
           direction={{ base: 'column', md: 'row' }}
@@ -96,40 +96,36 @@ export default function WithSpeechBubbles() {
             <TestimonialContent>
               <TestimonialHeading>Efficient Collaborating</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-                neque sed imperdiet nibh lectus feugiat nunc sem.
+              The Guru revolutionizes collaboration with its extensive community, quick response times, clear communication, and collaborative editing. Streamlined problem-solving at its finest.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
               src={
-                'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
+                'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50'
               }
-              name={'Jane Cooper'}
-              title={'CEO at ABC Corporation'}
+              name={'John'}
+              title={'Software Engineer'}
             />
           </Testimonial>
           <Testimonial>
             <TestimonialContent>
               <TestimonialHeading>Intuitive Design</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-                neque sed imperdiet nibh lectus feugiat nunc sem.
+              The Guru's intuitive design enhances collaboration with its user-friendly interface and seamless interaction. It promotes efficient problem-solving, making it a top choice for developers in the programming community.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
               src={
-                'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
+                'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250'
               }
-              name={'Jane Cooper'}
-              title={'CEO at ABC Corporation'}
-            />
+              name={'David'}
+              title={'Software Engineer'}            />
           </Testimonial>
           <Testimonial>
             <TestimonialContent>
               <TestimonialHeading>Mindblowing Service</TestimonialHeading>
               <TestimonialText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-                neque sed imperdiet nibh lectus feugiat nunc sem.
+              The Guru service is simply mindblowing. Its unmatched collaboration capabilities make it an essential resource for developers seeking efficient problem-solving and knowledge sharing.
               </TestimonialText>
             </TestimonialContent>
             <TestimonialAvatar
@@ -137,8 +133,7 @@ export default function WithSpeechBubbles() {
                 'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80'
               }
               name={'Jane Cooper'}
-              title={'CEO at ABC Corporation'}
-            />
+              title={'Software Engineer'}            />
           </Testimonial>
         </Stack>
       </Container>

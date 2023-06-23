@@ -77,10 +77,15 @@ export default function Home() {
 
 
       {/* Stats */}
+      <Box mb="150px">
+
       <BasicStatistics/>
+      </Box>
 
 {/* testimonials */}
+<Box mb="150px">
 <WithSpeechBubbles/>
+</Box>
 
       {/* footoer */}
       <LargeWithNewsletter/>

@@ -37,12 +37,12 @@ import {
           fontSize={'4xl'}
           py={10}
           fontWeight={'bold'}>
-          What is our company doing?
+          What is  <span style={{color:"#635dff"}}> The Guru</span>  doing?
         </chakra.h1>
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
-          <StatsCard title={'We serve'} stat={'50,000 people'} />
-          <StatsCard title={'In'} stat={'30 different countries'} />
-          <StatsCard title={'Who speak'} stat={'100 different languages'} />
+          <StatsCard title={'Daily Views'} stat={'50,000 Views'} />
+          <StatsCard title={'Daily Questions'} stat={'1000 questions'} />
+          <StatsCard title={'Daily Answers'} stat={'900 answers'} />
         </SimpleGrid>
       </Box>
     );
