@@ -123,7 +123,7 @@ function Navbar() {
     socket.disconnect();
     Router.push("/");
   };
-
+const menuBtn = useRef()
   return (
     <>
       <Flex
@@ -141,7 +141,7 @@ function Navbar() {
         {/* 1st component */}
         <Flex align={"center"} minW="215px" justify={"space-between"}>
           <Menu autoSelect={false} closeOnBlur={false} closeOnSelect={false}>
-            <MenuButton onClick={show} className="hambtn" bg="white">
+            <MenuButton ref={menuBtn} onClick={show} className="hambtn" bg="white">
               <Flex
                 h={"20px"}
                 w="24px"
@@ -189,9 +189,12 @@ function Navbar() {
             >
               <Link href={"/askquestion"}>
                 <MenuItem
+                onClick={()=>{menuBtn.current.click()}}
                   my="5px"
                   fontWeight={"semibold"}
-                  icon={<HiCode size={"18px"} color="#635dff" />}
+                  icon={<HiCode size={"18px"} color="#635dff" 
+                  />}
+                  borderRight={Router.pathname === "/askquestion" ? "3px solid #635dff" :""}
                 >
                   Ask a Question
                 </MenuItem>
@@ -199,42 +202,55 @@ function Navbar() {
               <Link href={"/topquestion"} legacyBehavior>
                 <a>
                   <MenuItem
+                                  onClick={()=>{menuBtn.current.click()}}
+
                     my="5px"
                     fontWeight={"semibold"}
                     icon={<BsQuestionLg size={"18px"} color="#635dff" />}
-                    borderRight="2px solid #635dff"
-                  >
+                    borderRight={Router.pathname === "/topquestion" ? "3px solid #635dff" :""}                  >
                     Questions
                   </MenuItem>
                 </a>
               </Link>
               <MenuItem
+                              onClick={()=>{menuBtn.current.click()}}
+
                 my="5px"
                 fontWeight={"semibold"}
                 icon={<FiTag size={"18px"} color="#635dff" />}
+                borderRight={Router.pathname === "/tags" ? "3px solid #635dff" :""}    
               >
                 Tags
               </MenuItem>
               <MenuItem
+                              onClick={()=>{menuBtn.current.click()}}
+
                 my="5px"
                 fontWeight={"semibold"}
                 icon={<FiUser size={"18px"} color="#635dff" />}
+                borderRight={Router.pathname === "/Users" ? "3px solid #635dff" :""}    
               >
                 Users
               </MenuItem>
               <Link href={"/Compiler"}>
                 <MenuItem
+                                onClick={()=>{menuBtn.current.click()}}
+
                   my="5px"
                   fontWeight={"semibold"}
                   icon={<HiCode size={"18px"} color="#635dff" />}
+                  borderRight={Router.pathname === "/Compiler" ? "3px solid #635dff" :""}    
                 >
                   Online Compiler
                 </MenuItem>
               </Link>
               <MenuItem
+                              onClick={()=>{menuBtn.current.click()}}
+
                 my="5px"
                 fontWeight={"semibold"}
                 icon={<BsQuestionSquare size={"18px"} color="#635dff" />}
+                borderRight={Router.pathname === "/about" ? "3px solid #635dff" :""} 
               >
                 About
               </MenuItem>
