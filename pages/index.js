@@ -1,6 +1,9 @@
 import { Box, Button, Flex, Heading, Spacer } from "@chakra-ui/react";
 import Head from "next/head";
 import Link from "next/link";
+import LargeWithNewsletter from "../components/Footer"
+import WithSpeechBubbles from "../components/Testimonials"
+import BasicStatistics from "../components/Stats"
 
 // import Typed from 'react-typed';
 export default function Home() {
@@ -71,6 +74,16 @@ export default function Home() {
         </Box>
       </Flex>
       {/* section 1 ended */}
+
+
+      {/* Stats */}
+      <BasicStatistics/>
+
+{/* testimonials */}
+<WithSpeechBubbles/>
+
+      {/* footoer */}
+      <LargeWithNewsletter/>
     </>
   );
 }
