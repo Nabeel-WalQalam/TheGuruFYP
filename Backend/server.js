@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const { Socket } = require("socket.io-client");
 const dbConnection = require("./database/connection");
-const userModel = require("./database/Models/userModel")
+const userModel = require("./database/Models/userModel");
 
 const createuser = require("./routes/createuser");
 const loginuser = require("./routes/loginuser");
@@ -27,7 +27,7 @@ const verifyToken = require("./routes/verifyToken");
 const getAllQuestions = require("./routes/getQuestions");
 const getAllAnswer = require("./routes/getAllUserAnswer");
 const Chat = require("./database/Models/chatModel");
-const deleteQuestion = require('./routes/deleteQuestion')
+const deleteQuestion = require("./routes/deleteQuestion");
 const path = require("path");
 const chatModel = require("./database/Models/chatModel");
 
@@ -61,12 +61,8 @@ app.use("/api/fetchmessages", fetchmessages);
 app.use("/api/updatesessionStatus", updatesessionStatus);
 app.use("/api/sendmsg", sendmsg);
 
-
 // delete request
 app.use("/api/deleteQuestion", deleteQuestion);
-
-
-
 
 const server = http.createServer(app);
 const userSocketMap = {};
@@ -121,9 +117,22 @@ io.on("connection", (socket) => {
     });
   });
 
-socket.on("endSession",async(payload,cb)=>{
-  try {
+  socket.on("endSession", async (payload, cb) => {
+    try {
+      await chatModel.findByIdAndUpdate(
+        { _id: payload.chat_id },
+        { sessionStatus: false }
+      );
+      cb({ msg: "Session Ended", success: true });
+      socket
+        .to(payload.user_id)
+        .emit("sessionEnded", { chat_id: payload.chat_id });
+    } catch (error) {
+      cb({ msg: "Network Error", success: false });
+    }
+  });
 
+  socket.on("chatrequest", async (payload, callback) => {
     await chatModel.findByIdAndUpdate({_id:payload.chat_id},{sessionStatus:false})
     cb({msg:"Session Ended",success:true})
     socket.to(payload.user_id).emit("sessionEnded",{chat_id:payload.chat_id})
@@ -143,37 +152,37 @@ socket.on("chat approved",async(payload)=>{
       const chatExists = await chatModel.exists({
         $and: [
           { users: { $all: [payload.user_id, payload.fromUser._id] } },
-          { users: { $size: 2 } }
-        ]
+          { users: { $size: 2 } },
+        ],
       });
-      if(chatExists){
-        const r= await chatModel.findById({_id:chatExists._id});
-        if(r.sessionStatus === true)
-        {
-          callback({msg:"Request Already Approved",success:false})
+      if (chatExists) {
+        const r = await chatModel.findById({ _id: chatExists._id });
+        if (r.sessionStatus === true) {
+          callback({ msg: "Request Already Approved", success: false });
           return;
-          
         }
       }
-      console.log("after return ")
-const res=await userModel.findOne({_id:payload.user_id,chatRequests: { $elemMatch: { _id: payload.fromUser._id } },})
+      console.log("after return ");
+      const res = await userModel.findOne({
+        _id: payload.user_id,
+        chatRequests: { $elemMatch: { _id: payload.fromUser._id } },
+      });
 
-if(res === null){
-      await userModel.findByIdAndUpdate({_id:payload.user_id},
-  {$push:{chatRequests:payload.fromUser}}
-)
-socket.to(payload.user_id).emit("chatRequestReceive",payload.fromUser)
-callback({msg:"Request Sent",success:true})
-}
-else{
-  callback({msg:"Aready Requested",success:false})
-}
+      if (res === null) {
+        await userModel.findByIdAndUpdate(
+          { _id: payload.user_id },
+          { $push: { chatRequests: payload.fromUser } }
+        );
+        socket.to(payload.user_id).emit("chatRequestReceive", payload.fromUser);
+        callback({ msg: "Request Sent", success: true });
+      } else {
+        callback({ msg: "Aready Requested", success: false });
+      }
     } catch (error) {
-      console.log("error")
-      console.log(error)
+      console.log("error");
+      console.log(error);
     }
-
-  })
+  });
 
   socket.on("join", ({ roomId, username }) => {
     //get the username... to room
@@ -192,9 +201,9 @@ else{
       });
     });
 
-    socket.on("code-change", ({ roomId, value, output }) => {
+    socket.on("code-change", ({ roomId, value, output, Language }) => {
       console.log("value", value);
-      socket.in(roomId).emit("code-change", { value , output });
+      socket.in(roomId).emit("code-change", { value, output, Language });
     });
 
     socket.on("sync-code", ({ socketId, code }) => {
