@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Spacer } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Spacer,Container,Stack } from "@chakra-ui/react";
 import Head from "next/head";
 import Link from "next/link";
 import LargeWithNewsletter from "../components/Footer";
@@ -8,6 +8,7 @@ import BasicStatistics from "../components/Stats";
 import Typed from "react-typed";
 import { Feature } from "../components/Feature";
 import Developer from "../components/Developer";
+import ProductSimple from "../components/Founders";
 export default function Home() {
   return (
     <>
@@ -78,7 +79,7 @@ export default function Home() {
       <Box my={"1rem"} mt={"2rem"}>
         <Feature />
       </Box>
-      <Box my={"1rem"}>
+      <Box my={"1rem"} mb="150px">
         <Developer />
       </Box>
 
@@ -92,6 +93,40 @@ export default function Home() {
       {/* testimonials */}
       <Box mb="150px">
         <WithSpeechBubbles />
+      </Box>
+
+
+      {/* founders */}
+      <Box
+      //  bg={"#EDF2F7"}
+       mb="150px"
+      >
+      <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
+        <Stack spacing={0} align={'center'}>
+          <Heading>Founders</Heading>
+          
+        </Stack>
+        <Stack
+          direction={{ base: 'column', md: 'row' }}
+          spacing={{ base: 10, md: 4, lg: 10 }}>
+      <ProductSimple name="Muhammad Hunfa"
+      designation="MERN STACK DEVELOPER"
+      url="/images/hunfa.jpg"
+      />
+       <ProductSimple name="Muhammad Sharaiz"
+      designation="Web Designer"
+      url="/images/sharaiz.jpg"
+      />
+        <ProductSimple name="Nabeel Muzaffar"
+      designation="MERN STACK DEVELOPER"
+      url="/images/nabeel.png"
+      />
+       <ProductSimple name="Abdullah Qaiser"
+      designation="Web Designer"
+      url="/images/qaiser.jpg"
+      />
+      </Stack>
+      </Container>
       </Box>
 
       {/* footoer */}
