@@ -122,6 +122,30 @@ function FindUserModal({ children }) {
       })
   }
 
+  const handleReject = (user_id)=>{
+    axios.post(`${process.env.NEXT_PUBLIC_Host_URL}api/rejectsession`, { user_id }, { headers: { token: localStorage.getItem('token') } })
+    .then((res)=>{
+      if (res.data.success) {
+        dispatch(removechatrequests(user_id))
+        // toast({
+        //   title: "Rejected",
+        //   description: res.data.payload,
+        //   status: 'error',
+        //   duration: 5000,
+        //   isClosable: true,
+        // });
+        console.log(res.data)
+      }
+    }).catch(function (error) {
+      toast({
+        title: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    })
+  }
+
   return (
     <>
       <Box onClick={onOpen}>{children}</Box>
@@ -157,7 +181,7 @@ function FindUserModal({ children }) {
                   <Button mr="2" colorScheme="green" size="sm" border={"none"} onClick={() => handleApprove(r._id,r)}>
                     Approve
                   </Button>
-                  <Button colorScheme="red" size="sm" border={"none"}>
+                  <Button colorScheme="red" size="sm" border={"none"} onClick={() => handleReject(r._id,r)}>
                     Reject
                   </Button>
                 </Flex>

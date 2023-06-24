@@ -79,7 +79,7 @@ export default function Home() {
       <Box my={"1rem"} mt={"2rem"}>
         <Feature />
       </Box>
-      <Box my={"1rem"} mb="150px">
+      <Box my={"1rem"} mb="90px">
         <Developer />
       </Box>
 
@@ -98,7 +98,7 @@ export default function Home() {
 
       {/* founders */}
       <Box
-      //  bg={"#EDF2F7"}
+       bg={"#EDF2F7"}
        mb="150px"
       >
       <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>

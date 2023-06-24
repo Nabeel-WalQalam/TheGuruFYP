@@ -15,6 +15,8 @@ const fetchmessages = require("./routes/fetchmessages");
 const getallchats = require("./routes/getallchats");
 const accessChat = require("./routes/accessChat");
 const updatesessionStatus = require("./routes/updatesessionStatus");
+const rejectsession = require("./routes/rejectsession");
+
 const searchuser = require("./routes/searchuser");
 const creategroupchat = require("./routes/creategroupchat");
 const postQuestion = require("./routes/postQuestion");
@@ -30,6 +32,7 @@ const Chat = require("./database/Models/chatModel");
 const deleteQuestion = require('./routes/deleteQuestion')
 const path = require("path");
 const chatModel = require("./database/Models/chatModel");
+
 
 dbConnection();
 const corsOptions = {
@@ -60,6 +63,8 @@ app.use("/api/getallchats", getallchats);
 app.use("/api/fetchmessages", fetchmessages);
 app.use("/api/updatesessionStatus", updatesessionStatus);
 app.use("/api/sendmsg", sendmsg);
+app.use("/api/rejectsession", rejectsession);
+
 
 
 // delete request
