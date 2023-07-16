@@ -34,6 +34,7 @@ const deleteQuestion = require("./routes/deleteQuestion");
 const path = require("path");
 const chatModel = require("./database/Models/chatModel");
 const search = require("./routes/search");
+
 dbConnection();
 const corsOptions = {
   origin: true,
