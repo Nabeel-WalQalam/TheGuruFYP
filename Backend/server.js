@@ -32,7 +32,7 @@ const Chat = require("./database/Models/chatModel");
 const deleteQuestion = require('./routes/deleteQuestion')
 const path = require("path");
 const chatModel = require("./database/Models/chatModel");
-
+const search = require("./routes/search");
 
 dbConnection();
 const corsOptions = {
@@ -64,7 +64,7 @@ app.use("/api/fetchmessages", fetchmessages);
 app.use("/api/updatesessionStatus", updatesessionStatus);
 app.use("/api/sendmsg", sendmsg);
 app.use("/api/rejectsession", rejectsession);
-
+app.use("/api/search", search);
 
 
 // delete request
