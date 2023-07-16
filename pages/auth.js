@@ -61,10 +61,11 @@ function Auth() {
       .then((res) => {
         // console.log("response came", res);
         if (res.data.success) {
-          toast({ title: "Account Created ! Login Now", status: "success" });
           reset();
-          let button = document.getElementById("signIn");
-          button.click();
+          // let button = document.getElementById("signIn");
+          // button.click();
+          localStorage.setItem("findEmail", data.email);
+          Router.push("/moreinfo");
         } else {
           toast({
             title: res.data.payload,
@@ -79,32 +80,51 @@ function Auth() {
   //api for login
 
   const onSubmitForm2 = async (data) => {
-    // console.log(data);
-    axios
-      .post(`${process.env.NEXT_PUBLIC_Host_URL}api/loginuser`, {
-        email: data.email,
-        password: data.password,
-      })
-      .then((res) => {
-        // console.log("response came", res);
-        if (res.data.success) {
+    console.log(data);
+    try {
+      axios
+        .post(`${process.env.NEXT_PUBLIC_Host_URL}api/loginuser`, {
+          email: data.email,
+          password: data.password,
+        })
+        .then((res) => {
+          // console.log("response came", res);
+          if (res.data.success) {
+            reset();
+            const dateString = res.data.payload.user.created_at;
+            const date = new Date(dateString);
+            const normalDate = date.toDateString();
+            localStorage.setItem("token", res.data.payload.token);
+            localStorage.setItem("join", normalDate);
+            localStorage.setItem("username", res.data.payload.user.name);
+            localStorage.setItem("bio", res.data.payload.user.bio);
+            localStorage.setItem("city", res.data.payload.user.city);
+            localStorage.setItem("email", res.data.payload.user.email);
+            localStorage.setItem("gender", res.data.payload.user.gender);
+            localStorage.setItem("userId", res.data.payload.user._id);
+            localStorage.setItem(
+              "profileImage",
+              res.data.payload.user.profileImage
+            );
+            localStorage.setItem("student", res.data.payload.user.student);
+            localStorage.setItem("institude", res.data.payload.user.institude);
+            dispatch(setCurrentUser(res.data.payload.user));
+            Router.push("/");
+          } else {
+            toast({
+              title: res.data.payload,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("error");
           toast({
-            title: "Welcome To THE GURU",
-            status: "success",
+            title: "Something went wrong",
           });
-          reset();
-          localStorage.setItem("token", res.data.payload.token);
-          dispatch(setCurrentUser(res.data.payload.user));
-          Router.push("/");
-        } else {
-          toast({
-            title: res.data.payload,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log("error");
-      });
+        });
+    } catch {
+      console.log("error");
+    }
   };
 
   // const handleclick=()=>{

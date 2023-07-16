@@ -3,13 +3,43 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Question from "../../components/Question";
 import { Spinner, Text, Flex } from "@chakra-ui/react";
+import Loader from "../../Loader";
 
 const Slug = () => {
   const router = useRouter();
   const { slug } = router.query;
   const [Allanswer, setAllanswer] = useState(null);
+  const [question, setquestion] = useState(null);
   const [isAnswerPost, setisAnswerPost] = useState(false);
+  const [FIlterQuestion, setFIlterQuestion] = useState(null);
   // console.log(slug);
+
+  useEffect(() => {
+    const getAllQuestion = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_Host_URL}api/getAllQuestion`
+        );
+        console.log("question", response.data.payload);
+
+        setquestion(response.data.payload.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getAllQuestion();
+  }, []);
+
+  useEffect(() => {
+    if (question) {
+      const filterData = question.filter((items) => {
+        return items._id == slug;
+      });
+      console.log("filter", filterData);
+      setFIlterQuestion(filterData);
+    }
+  }, [question]);
 
   useEffect(() => {
     const cancelRequest = axios.CancelToken.source();
@@ -33,9 +63,7 @@ const Slug = () => {
               setisAnswerPost(false);
             });
         } catch (error) {
-          if (axios.isCancel(err)) {
-            console.log("cancel request");
-          }
+          console.log("cancel request");
 
           console.log(error);
         }
@@ -55,6 +83,7 @@ const Slug = () => {
         <Question
           isPosted={setisAnswerPost}
           Allanswer={Allanswer}
+          question={FIlterQuestion}
           question_id={slug}
         />
       ) : (
@@ -66,8 +95,7 @@ const Slug = () => {
             justify={"center"}
             align="center"
           >
-            <Spinner size="xl" thickness="15px" />
-            <Text>Loading</Text>
+            <Loader />
           </Flex>
         </>
       )}

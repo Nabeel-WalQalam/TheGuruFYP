@@ -6,6 +6,7 @@ import SideBar from "../components/sidebar/SideBar";
 import store from "../redux/store";
 import { Provider, useDispatch } from "react-redux";
 import axios from "axios";
+import LargeWithNewsletter from "../components/Footer";
 
 import { setCurrentUser } from "../redux/reducers/user-reducer";
 
@@ -74,6 +75,7 @@ function MyApp({ Component, pageProps }) {
               <Navbar />
               {reduxStore.userReducer.currentUser && <SideBar />}
               <Component {...pageProps} />
+              <LargeWithNewsletter />
             </SocketWrapper>
           </Provider>
         </ChakraProvider>

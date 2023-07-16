@@ -9,7 +9,6 @@ import {
   SlideFade,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import css from "../styles/home.module.css";
 
 function Tagsinput({ setTags }) {
   const [value, setvalue] = useState("");

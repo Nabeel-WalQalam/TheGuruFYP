@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
         payload: { message: "Successfully get All Questions", data: Questions },
       });
     } else {
-      res.send({ success: false, payload: "Error Occured" });
+      res.send({ success: false, payload: null });
     }
   } catch (error) {
     res.send({ success: false, payload: error });

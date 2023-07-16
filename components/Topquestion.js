@@ -1,5 +1,12 @@
 import React from "react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Avatar,
+} from "@chakra-ui/react";
 
 import {
   Flex,
@@ -17,7 +24,6 @@ import { RiMessage3Fill } from "react-icons/ri";
 import { ViewIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 export const Topquestion = ({ questions }) => {
-  console.log("12", questions);
   return (
     <>
       {questions
@@ -58,15 +64,38 @@ export const Topquestion = ({ questions }) => {
                 </Stack>
 
                 <Box display={"inherit"}>
-                  <Image
-                    borderRadius="full"
-                    boxSize="30px"
-                    src="https://bit.ly/dan-abramov"
-                    alt="Dan Abramov"
-                  />{" "}
-                  <Box fontWeight={"sm"} mx="4px">
-                    {data.user.name ? data.user.name : ""}
-                  </Box>
+                  {data.user && data.user.profileImage ? (
+                    <>
+                      <Image
+                        borderRadius="full"
+                        boxSize="30px"
+                        src="https://bit.ly/dan-abramov"
+                        alt="Dan Abramov"
+                      />
+                      <Box
+                        textTransform="Capitalize"
+                        fontWeight={"sm"}
+                        mx="4px"
+                      >
+                        {data.user ? data.user.name : ""}
+                      </Box>
+                    </>
+                  ) : (
+                    <>
+                      <Avatar
+                        boxSize="30px"
+                        name={data.user && data.user.name}
+                        src="https://bit.ly/tioluwani-kolawole"
+                      />
+                      <Box
+                        textTransform="Capitalize"
+                        fontWeight={"sm"}
+                        mx="4px"
+                      >
+                        {data.user ? data.user.name : ""}
+                      </Box>
+                    </>
+                  )}
                 </Box>
               </Flex>
               <Flex
@@ -83,7 +112,7 @@ export const Topquestion = ({ questions }) => {
                   flexDirection={"column"}
                   alignItems="center"
                   mx={"0.5rem"}
-                  cursor="pointer"
+                  // cursor="pointer"
                 >
                   <Text>
                     {data ? data.upVote.length - data.downVote.length : 0}
@@ -95,7 +124,7 @@ export const Topquestion = ({ questions }) => {
                 {/* <Divider orientation="vertical" ></Divider> */}
 
                 <Box
-                  cursor="pointer"
+                  // cursor="pointer"
                   // border={"1px"}
                   className="sideIcon"
                   display="flex"
@@ -113,7 +142,7 @@ export const Topquestion = ({ questions }) => {
                   <ViewIcon />
                 </Box>
                 <Box
-                  cursor="pointer"
+                  // cursor="pointer"
                   className="sideIcon"
                   // border={"1px"}
                   display="flex"

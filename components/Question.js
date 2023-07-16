@@ -1,7 +1,11 @@
 import { React, useState, useEffect } from "react";
-import { Collapse, Button, Tooltip } from "@chakra-ui/react";
+import { Collapse, Button, Tooltip, Avatar } from "@chakra-ui/react";
 import { Answers } from "../components/Answer";
-import { BsArrowDownCircle, BsArrowUpCircle, BsFillSuitHeartFill } from "react-icons/bs";
+import {
+  BsArrowDownCircle,
+  BsArrowUpCircle,
+  BsFillSuitHeartFill,
+} from "react-icons/bs";
 <link
   href="https://cdn.quilljs.com/1.0.0/quill.snow.css"
   rel="stylesheet"
@@ -23,7 +27,6 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -33,10 +36,11 @@ import ReactHtmlParser from "react-html-parser";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import { MdFavoriteBorder } from "react-icons/md";
 import { TimeIcon, EditIcon, DeleteIcon, ViewIcon } from "@chakra-ui/icons";
-import { Texteditor } from "../Components/Texteditor.js";
 import { RiArrowUpCircleFill } from "react-icons/ri";
 import { useRouter } from "next/router";
-export default function Home({ isPosted, question_id, Allanswer }) {
+import { Texteditor } from "./Texteditor";
+import Link from "next/link";
+export default function Home({ isPosted, question, Allanswer, question_id }) {
   const toast = useToast();
   const user = useSelector((state) => state.userReducer.currentUser);
   // console.log(Allanswer.length);
@@ -46,7 +50,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
   const [upVote, setupVote] = useState(false);
   const [downVote, setdownVote] = useState(false);
   const [disableVotes, setdisableVotes] = useState(false);
-  const Router= useRouter();
+  const Router = useRouter();
 
   const editHandler = () => {
     // console.log("Edit button");
@@ -95,23 +99,25 @@ export default function Home({ isPosted, question_id, Allanswer }) {
   };
   // console.log(user._id);
 
-  useEffect(() => {
-    if (Allanswer[0].question_id) {
-      console.log(Allanswer);
-      Allanswer[0].question_id.upVote.map((items) => {
-        if (items == user._id) {
-          // isPosted(true);
-          setupVote(true);
-        }
-      });
-      Allanswer[0].question_id.downVote.map((items) => {
-        if (items == user._id) {
-          // isPosted(true);
-          setdownVote(true);
-        }
-      });
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     if (Allanswer) {
+  //       // console.log(Allanswer);
+  //       Allanswer[0].question_id.upVote.map((items) => {
+  //         if (items == user._id) {
+  //           // isPosted(true);
+  //           setupVote(true);
+  //         }
+  //       });
+  //       Allanswer[0].question_id.downVote.map((items) => {
+  //         if (items == user._id) {
+  //           // isPosted(true);
+  //           setdownVote(true);
+  //         }
+  //       });
+  //     }
+  //   }
+  // }, [user]);
 
   const handleupVote = async (question_key, text) => {
     // console.log(question_id, text);
@@ -166,28 +172,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
       });
   };
 
-
-  const handleQuestionDelete =(key)=>{
-    console.log('delete' , key)
-    axios.delete(`${process.env.NEXT_PUBLIC_Host_URL}api/deleteQuestion/${key}`)
-    .then(response => {
-      console.log('Item deleted successfully.' , response);
-      if(response.data.success){
-        toast({
-          title: 'Question deleted successfully',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-        Router.push('/topquestion');
-      }
-      // Perform any additional actions upon successful deletion
-    })
-    .catch(error => {
-      console.error('Error deleting item:', error);
-      // Handle any errors that occurred during deletion
-    });
-  }
+  console.log("question of user", question);
 
   return (
     <>
@@ -211,7 +196,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
               align="center"
             >
               <Flex
-                width="100%"
+                width="85%"
                 // direction={"row"}
                 // border={"1px"}
                 justify="space-between"
@@ -220,25 +205,46 @@ export default function Home({ isPosted, question_id, Allanswer }) {
               >
                 <Box
                   // mx={"5"}
+                  // ml={"2rem"}
                   display={"inherit"}
                   // border={"1px black solid"}
                 >
-                  <Image
-                    borderRadius="full"
-                    boxSize="50px"
-                    src="https://bit.ly/dan-abramov"
-                    alt="Dan Abramov"
-                    // mr="2"
-                    ml={"14"}
-                  />
-                  <Center
-                    fontSize="lg"
-                    ml={"2"}
-                    // color="black"
-                    fontWeight={"bold"}
-                  >
-                    {Allanswer[0].user.name ? Allanswer[0].user.name : ""}
-                  </Center>
+                  {question && question[0].user.profileImage ? (
+                    <>
+                      <Image
+                        borderRadius="full"
+                        boxSize="30px"
+                        src="https://bit.ly/dan-abramov"
+                        alt="Dan Abramov"
+                      />
+                      <Box
+                        textTransform="Capitalize"
+                        fontSize="lg"
+                        ml={"2"}
+                        // color="black"
+                        fontWeight={"bold"}
+                      >
+                        {question[0].user ? question[0].user.name : ""}
+                      </Box>
+                    </>
+                  ) : (
+                    <>
+                      <Avatar
+                        boxSize="30px"
+                        name={question[0] && question[0].user.name}
+                        src="https://bit.ly/tioluwani-kolawole"
+                      />
+                      <Box
+                        textTransform="Capitalize"
+                        fontSize="lg"
+                        ml={"2"}
+                        // color="black"
+                        fontWeight={"bold"}
+                      >
+                        {question[0].user ? question[0].user.name : ""}
+                      </Box>
+                    </>
+                  )}
                 </Box>
                 <Box
                   mx={"5rem"}
@@ -274,43 +280,45 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                   mx={"4"}
                   // mt={"4"}
                   // height={"200px"}
-                  gap={'1rem'}
+                  gap={"1rem"}
                 >
-                   <Tooltip label="up vote" >
-                  <Button variant={"none"} isDisabled={disableVotes}>
-                    <BsArrowUpCircle
-                      fontSize={"2rem"}
-                      fontWeight={"bold"}
-                      fill={upVote ? "purple" : "black"}
-                      onClick={() => handleupVote(Allanswer[0]._id, "upVote")}
-                      className="ArrowUp"
-                    />
-                  </Button>
+                  <Tooltip label="up vote">
+                    <Button variant={"none"} isDisabled={disableVotes}>
+                      <BsArrowUpCircle
+                        fontSize={"2rem"}
+                        fontWeight={"bold"}
+                        fill={upVote ? "purple" : "black"}
+                        onClick={() => handleupVote(Allanswer[0]._id, "upVote")}
+                        className="ArrowUp"
+                      />
+                    </Button>
                   </Tooltip>
-                  <Text fontSize={'1.5rem'} fontWeight={"semibold"}>
+                  <Text fontSize={"1.5rem"} fontWeight={"semibold"}>
                     {Allanswer[0].question_id
                       ? Allanswer[0].question_id.upVote.length -
                         Allanswer[0].question_id.downVote.length
                       : Allanswer[0].upVote.length -
                         Allanswer[0].downVote.length}
                   </Text>
-                  <Tooltip label="down vote" >
-                  <Button isDisabled={disableVotes} variant={"none"}>
-                    <BsArrowDownCircle
-                      fontSize={"2rem"}
-                      fontWeight={"bold"}
-                      fill={downVote ? "red" : "gray"}
-                      className="ArrowUp"
-                      onClick={() => handleupVote(Allanswer[0]._id, "downVote")}
-                    />
-                  </Button>
+                  <Tooltip label="down vote">
+                    <Button isDisabled={disableVotes} variant={"none"}>
+                      <BsArrowDownCircle
+                        fontSize={"2rem"}
+                        fontWeight={"bold"}
+                        fill={downVote ? "red" : "gray"}
+                        className="ArrowUp"
+                        onClick={() =>
+                          handleupVote(Allanswer[0]._id, "downVote")
+                        }
+                      />
+                    </Button>
                   </Tooltip>
-                  <BsFillSuitHeartFill
+                  {/* <BsFillSuitHeartFill
                     size={"35px"}
                     color="lightgray"
                     className="heartIcon"
                     // style={{   color: "#635DFF" }}
-                  />
+                  /> */}
                 </Box>
 
                 <Flex
@@ -330,7 +338,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
                     padding={"4"}
                     borderRadius={"8"}
                   >
-                    <Box P='1rem'>
+                    <Box P="1rem">
                       {Allanswer[0].description
                         ? ReactHtmlParser(Allanswer[0].description)
                         : ReactHtmlParser(Allanswer[0].question_id.description)}
@@ -364,68 +372,7 @@ export default function Home({ isPosted, question_id, Allanswer }) {
               </Flex>
 
               {/* Third Box */}
-
-              <Flex
-                // border="1px"
-                // borderColor={"black"}
-                width="90%"
-                justify={"space-between"}
-                align="center"
-                mt={"3"}
-              >
-                <Flex
-                  justify={"space-around"}
-                  // border="10"
-                  // width={"10%"}
-                  // ml="15"
-                  align={"center"}
-                >
-                  <Box
-                    onClick={editHandler}
-                    ml={"0.7rem"}
-                    display={"flex"}
-                    justifyContent="center"
-                    alignItems={"center"}
-                    className="editIcon"
-                  >
-                    <EditIcon />
-                    <Text mx={"1"}>Edit</Text>
-                    <Divider orientation="vertical" />
-                  </Box>
-                  <Box
-                    mx={"5"}
-                    display={"flex"}
-                    justifyContent="center"
-                    alignItems={"center"}
-                    className="editIcon2"
-                    onClick={()=>handleQuestionDelete(question_id)}
-                  >
-                    <DeleteIcon />
-                    <Text ml={"1"}>Delete</Text>
-                  </Box>
-                </Flex>
-                <Box
-                  // border={"1"}
-                  display="flex"
-                  alignItems={"center"}
-                  mr="2rem"
-                  // bg="#635DFF"
-                  // borderRadius="10"
-                  // border={"1px"}
-                  // borderColor={"#635DFF"}
-                  // borderRadius="50"
-                >
-                  <ViewIcon />
-                  <Flex mx={"2"}>
-                    {Allanswer[0].views
-                      ? Allanswer[0].views.count
-                      : Allanswer[0].question_id.views.count}
-                    <Text mx={"0.5rem"}>Views</Text>
-                  </Flex>
-                </Box>
-              </Flex>
             </Flex>
-            <Divider mt="5" width="10%" mx="auto"></Divider>
           </Box>
         </Box>
       )}
@@ -466,10 +413,20 @@ export default function Home({ isPosted, question_id, Allanswer }) {
         </>
       ) : (
         <>
-          <Flex justify={"center"} align={"center"}>
+          <Flex
+            my={"5rem"}
+            justify={"center"}
+            direction={"column"}
+            align={"center"}
+          >
             <Text fontSize={"2rem"} color={"#153A5B"}>
-              Login First to Answer
+              Login to Answer
             </Text>
+            <Link href={"/"}>
+              <Button w={"15%"} colorScheme="guru">
+                Home
+              </Button>
+            </Link>
           </Flex>
         </>
       )}

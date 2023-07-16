@@ -16,12 +16,13 @@ import {
   useToast,
   Center,
 } from "@chakra-ui/react";
-import { Texteditor } from "../Components/Texteditor";
 import Tagsinput from "../components/Tagsinput";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { setCurrentUser } from "../redux/reducers/user-reducer";
+import { Texteditor } from "../components/Texteditor";
+import Link from "next/link";
 function Askquestion() {
   const toast = useToast();
   const title = useRef();
@@ -50,7 +51,7 @@ function Askquestion() {
         if (response.data.success) {
           toast({
             title: response.data.payload,
-            position: "top-left",
+            position: "bottom",
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -61,7 +62,7 @@ function Askquestion() {
           toast({
             title: response.data.payload,
             status: "error",
-            position: "top-left",
+            position: "bottom",
             duration: 3000,
             isClosable: true,
           });
@@ -237,7 +238,13 @@ function Askquestion() {
           </Flex>
         </>
       ) : (
-        <Flex justify={"center"} align="center" direction="column">
+        <Flex
+          justify={"center"}
+          height={"50vh"}
+          align="center"
+          direction="column"
+          my="2rem"
+        >
           <Center>
             <Text
               fontSize={"2rem"}
@@ -248,12 +255,11 @@ function Askquestion() {
               Login to Post Question
             </Text>
           </Center>
-          <Box>
-            {" "}
-            <Text mt={"1rem"} fontSize={"1.4rem"}>
-              Top Question List Below
-            </Text>
-          </Box>
+          <Link href="/">
+            <Button colorScheme="guru" width="40%">
+              Home
+            </Button>
+          </Link>
         </Flex>
       )}
     </>

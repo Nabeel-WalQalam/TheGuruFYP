@@ -1,5 +1,5 @@
 import { React, useState, useRef, useEffect } from "react";
-import { Collapse, Textarea, Tooltip } from "@chakra-ui/react";
+import { Avatar, Collapse, Textarea, Tooltip } from "@chakra-ui/react";
 import { TimeIcon, ViewIcon } from "@chakra-ui/icons";
 import { useMediaQuery } from "@chakra-ui/react";
 import axios from "axios";
@@ -38,10 +38,13 @@ import { userReducer } from "../redux/reducers/user-reducer";
 import ReactHtmlParser from "react-html-parser";
 
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { BsArrowDownCircle, BsArrowUpCircle, BsFillReplyFill } from "react-icons/bs";
+import {
+  BsArrowDownCircle,
+  BsArrowUpCircle,
+  BsFillReplyFill,
+} from "react-icons/bs";
 import { useToast } from "@chakra-ui/react";
 import { socket } from "./socketWrapper";
-
 
 export const Answers = ({ Answers, isPosted }) => {
   const user = useSelector((state) => state.userReducer.currentUser);
@@ -169,26 +172,25 @@ export const Answers = ({ Answers, isPosted }) => {
         console.log(error);
       });
   };
-  
-  const handleStartChat=()=>{
 
-socket.emit("chatrequest",{user_id:Answers.user._id,fromUser:user},(res)=>{
-  if(res.success){
-    toast({
-      title:res.msg,
-      status: 'success'
-
-    })
-  }
-  else{
-    toast({
-      title:res.msg,
-
-    })
-  }
-  
-})
-  }
+  const handleStartChat = () => {
+    socket.emit(
+      "chatrequest",
+      { user_id: Answers.user._id, fromUser: user },
+      (res) => {
+        if (res.success) {
+          toast({
+            title: res.msg,
+            status: "success",
+          });
+        } else {
+          toast({
+            title: res.msg,
+          });
+        }
+      }
+    );
+  };
 
   return (
     <>
@@ -210,7 +212,7 @@ socket.emit("chatrequest",{user_id:Answers.user._id,fromUser:user},(res)=>{
           align="center"
         >
           <Flex
-            width="100%"
+            width="85%"
             // direction={"row"}
             justify="space-between"
             align={"center"}
@@ -221,23 +223,32 @@ socket.emit("chatrequest",{user_id:Answers.user._id,fromUser:user},(res)=>{
               display={"inherit"}
               // border={"1px black solid"}
             >
-              <Image
-                borderRadius="full"
-                boxSize="50px"
-                src="https://bit.ly/dan-abramov"
-                alt="Dan Abramov"
-                // mr="2"
-                ml={"14"}
-              />
-              <Center
-                fontSize="lg"
-                ml={"2"}
-                // color="black"
-                fontWeight={"bold"}
-              >
-                {Answers ? Answers.user.name : ""}
-              </Center>
+              {Answers.user && Answers.user.profileImage ? (
+                <>
+                  <Image
+                    borderRadius="full"
+                    boxSize="30px"
+                    src={Answers.user && Answers.user.profileImage}
+                    alt="Dan Abramov"
+                  />
+                  <Box textTransform="Capitalize" fontWeight={"sm"} mx="4px">
+                    {Answers ? Answers.user.name : ""}
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Avatar
+                    boxSize="30px"
+                    name={Answers.user && Answers.user.name}
+                    src="https://bit.ly/tioluwani-kolawole"
+                  />
+                  <Box textTransform="Capitalize" fontWeight={"sm"} mx="4px">
+                    {Answers ? Answers.user.name : ""}
+                  </Box>
+                </>
+              )}
             </Box>
+
             <Box
               mx={"5rem"}
               //  border={"1px black solid"}
@@ -261,9 +272,9 @@ socket.emit("chatrequest",{user_id:Answers.user._id,fromUser:user},(res)=>{
             ml="6"
             bg={"gray.100"}
             p={"0.5rem"}
-            mt='1rem'
+            mt="1rem"
           >
-            <Box  width={"95%"}>
+            <Box width={"95%"}>
               <Box
               //  p={"2rem"}
               >
@@ -293,114 +304,122 @@ socket.emit("chatrequest",{user_id:Answers.user._id,fromUser:user},(res)=>{
             // ml="15"
             align={"center"}
           >
-            <Tooltip label="up vote" >
-            <Button
-              variant={"none"}
-              ml={"4rem"}
-              display={"flex"}
-              justifyContent="center"
-              alignItems={"center"}
-              // mr="5"
-              className="ArrowUp"
-              isDisabled={disableVotes}
-              onClick={() => handleanswerVote(Answers._id, "upVote")}
-            >
-              <BsArrowUpCircle
-                fontSize={"2rem"}
-                fontWeight={"bold"}
-                fill={upVote ? "purple" : "gray"}
-              />
-              {/* <Text mx={"1"} className="text">
+            {user && (
+              <>
+                <Tooltip label="up vote">
+                  <Button
+                    variant={"none"}
+                    ml={"4rem"}
+                    display={"flex"}
+                    justifyContent="center"
+                    alignItems={"center"}
+                    // mr="5"
+                    className="ArrowUp"
+                    isDisabled={disableVotes}
+                    onClick={() => handleanswerVote(Answers._id, "upVote")}
+                  >
+                    <BsArrowUpCircle
+                      fontSize={"2rem"}
+                      fontWeight={"bold"}
+                      fill={upVote ? "purple" : "gray"}
+                    />
+                    {/* <Text mx={"1"} className="text">
                 Up vote
               </Text> */}
-            </Button>
-            </Tooltip>
-            <Text
-              // bg="#635DFF"
-              fontSize={'1.5rem'} fontWeight={"semibold"}
-            >
-              {Answers ? Answers.upVote.length - Answers.downVote.length : 0}
-            </Text>
-            <Tooltip label="down vote" >
-            <Button
-              variant={"none"}
-              isDisabled={disableVotes}
-              // mx={"5"}
-              display={"flex"}
-              justifyContent="center"
-              alignItems={"center"}
-              className="ArrowUp"
-              onClick={() => handleanswerVote(Answers._id, "downVote")}
-            >
+                  </Button>
+                </Tooltip>
+                <Text
+                  // bg="#635DFF"
+                  fontSize={"1.5rem"}
+                  fontWeight={"semibold"}
+                >
+                  {Answers
+                    ? Answers.upVote.length - Answers.downVote.length
+                    : 0}
+                </Text>
+                <Tooltip label="down vote">
+                  <Button
+                    variant={"none"}
+                    isDisabled={disableVotes}
+                    // mx={"5"}
+                    display={"flex"}
+                    justifyContent="center"
+                    alignItems={"center"}
+                    className="ArrowUp"
+                    onClick={() => handleanswerVote(Answers._id, "downVote")}
+                  >
+                    <BsArrowDownCircle
+                      fontSize={"2rem"}
+                      fontWeight={"bold"}
+                      fill={downVote ? "purple" : "gray"}
+                    />
+                  </Button>
+                </Tooltip>
+                <Flex
+                  gap="1rem"
+                  mx={"3"}
+                  display={"flex"}
+                  justifyContent="center"
+                  alignItems={"center"}
+                  // bg="#635DFF"
+                  // border={"1px"}
+                  // borderColor={"gray.200"}
+                  padding="1px 15px"
+                  // color={"white"}
+                  borderRadius={"5"}
+                >
+                  <Button
+                    leftIcon={<BsFillReplyFill />}
+                    variant={"solid"}
+                    colorScheme="guru"
+                    border={"none"}
+                    _focus={"none"}
+                    // color={"white"}
+                    onClick={onOpen}
+                  >
+                    Add Comment
+                  </Button>
+                  <Button
+                    colorScheme="facebook"
+                    variant={"outline"}
+                    // border={"none"}
+                    onClick={handleStartChat}
+                  >
+                    Start a chat
+                  </Button>
 
-              <BsArrowDownCircle
-                fontSize={"2rem"}
-                fontWeight={"bold"}
-                fill={downVote ? "purple" : "gray"}
-              />
-              
-            </Button>
-            </Tooltip>
+                  <Modal size={"lg"} isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Comment</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>
+                        <Flex justify={"center"} direction={"column"}>
+                          <Textarea
+                            ref={comment}
+                            placeholder="please give a valid commente"
+                          />
+                          <Button
+                            isDisabled={disable}
+                            mt={"1rem"}
+                            onClick={() => handleComment(Answers._id)}
+                            colorScheme="guru"
+                          >
+                            Add Comment
+                          </Button>
+                        </Flex>
+                      </ModalBody>
 
-  
-
-            <Box
-              mx={"3"}
-              display={"flex"}
-              justifyContent="center"
-              alignItems={"center"}
-              // bg="#635DFF"
-              border={'1px'}
-              borderColor={'gray.200'}
-              padding="1px 15px"
-              // color={"white"}
-              borderRadius={"5"}
-              _hover={{
-                textDecor:'underline',
-                borderColor:'#153A5B'
-              }}
-            >
-                
-              <BsFillReplyFill  />
-
-              <Button
-                variant={"none"}
-                border={"none"}
-                _focus={'none'}
-                // color={"white"}
-                onClick={onOpen}
-              >
-                Add Comment
-              </Button>
-              <Button onClick={handleStartChat}>Start a chat</Button>
-
-              <Modal size={"lg"} isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Comment</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody>
-                    <Flex justify={"center"} direction={"column"}>
-                      <Textarea ref={comment} placeholder="please give a valid commente" />
-                      <Button
-                        isDisabled={disable}
-                        mt={"1rem"}
-                        onClick={() => handleComment(Answers._id)}
-                        colorScheme="guru"
-                      >
-                        Add Comment
-                      </Button>
-                    </Flex>
-                  </ModalBody>
-
-                  <ModalFooter>
-                    <Button colorScheme="facebook" mr={3} onClick={onClose}>
-                      Close
-                    </Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
-            </Box>
+                      <ModalFooter>
+                        <Button colorScheme="facebook" mr={3} onClick={onClose}>
+                          Close
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+                </Flex>
+              </>
+            )}
           </Flex>
           {/* <Box
             // border={"1"}
@@ -418,9 +437,7 @@ socket.emit("chatrequest",{user_id:Answers.user._id,fromUser:user},(res)=>{
           </Box> */}
         </Flex>
 
-        <Divider width={"60%"}  mx='auto' my={'2rem'}></Divider>
-
-        <Flex w={"90%"} marginInline={"auto"}  direction={"column"}>
+        <Flex w={"90%"} marginInline={"auto"} direction={"column"}>
           {/* <Text>Comments : </Text> */}
           {Answers.commet
             ? Answers.commet.map((comments, index) => {

@@ -113,7 +113,7 @@ function Navbar() {
   const handleLogout = async () => {
     dispatch(setCurrentUser(null));
     toast({
-      title: "You are Log-out",
+      title: "You are logOut",
       position: "bottom",
       status: "success",
       duration: 3000,
@@ -123,7 +123,7 @@ function Navbar() {
     socket.disconnect();
     Router.push("/");
   };
-const menuBtn = useRef()
+  const menuBtn = useRef();
   return (
     <>
       <Flex
@@ -141,7 +141,12 @@ const menuBtn = useRef()
         {/* 1st component */}
         <Flex align={"center"} minW="215px" justify={"space-between"}>
           <Menu autoSelect={false} closeOnBlur={false} closeOnSelect={false}>
-            <MenuButton ref={menuBtn} onClick={show} className="hambtn" bg="white">
+            <MenuButton
+              ref={menuBtn}
+              onClick={show}
+              className="hambtn"
+              bg="white"
+            >
               <Flex
                 h={"20px"}
                 w="24px"
@@ -189,12 +194,17 @@ const menuBtn = useRef()
             >
               <Link href={"/askquestion"}>
                 <MenuItem
-                onClick={()=>{menuBtn.current.click()}}
+                  onClick={() => {
+                    menuBtn.current.click();
+                  }}
                   my="5px"
                   fontWeight={"semibold"}
-                  icon={<HiCode size={"18px"} color="#635dff" 
-                  />}
-                  borderRight={Router.pathname === "/askquestion" ? "3px solid #635dff" :""}
+                  icon={<HiCode size={"18px"} color="#635dff" />}
+                  borderRight={
+                    Router.pathname === "/askquestion"
+                      ? "3px solid #635dff"
+                      : ""
+                  }
                 >
                   Ask a Question
                 </MenuItem>
@@ -202,55 +212,73 @@ const menuBtn = useRef()
               <Link href={"/topquestion"} legacyBehavior>
                 <a>
                   <MenuItem
-                                  onClick={()=>{menuBtn.current.click()}}
-
+                    onClick={() => {
+                      menuBtn.current.click();
+                    }}
                     my="5px"
                     fontWeight={"semibold"}
                     icon={<BsQuestionLg size={"18px"} color="#635dff" />}
-                    borderRight={Router.pathname === "/topquestion" ? "3px solid #635dff" :""}                  >
+                    borderRight={
+                      Router.pathname === "/topquestion"
+                        ? "3px solid #635dff"
+                        : ""
+                    }
+                  >
                     Questions
                   </MenuItem>
                 </a>
               </Link>
               <MenuItem
-                              onClick={()=>{menuBtn.current.click()}}
-
+                onClick={() => {
+                  menuBtn.current.click();
+                }}
                 my="5px"
                 fontWeight={"semibold"}
                 icon={<FiTag size={"18px"} color="#635dff" />}
-                borderRight={Router.pathname === "/tags" ? "3px solid #635dff" :""}    
+                borderRight={
+                  Router.pathname === "/tags" ? "3px solid #635dff" : ""
+                }
               >
                 Tags
               </MenuItem>
               <MenuItem
-                              onClick={()=>{menuBtn.current.click()}}
-
+                onClick={() => {
+                  menuBtn.current.click();
+                }}
                 my="5px"
                 fontWeight={"semibold"}
                 icon={<FiUser size={"18px"} color="#635dff" />}
-                borderRight={Router.pathname === "/Users" ? "3px solid #635dff" :""}    
+                borderRight={
+                  Router.pathname === "/Users" ? "3px solid #635dff" : ""
+                }
               >
                 Users
               </MenuItem>
               <Link href={"/Compiler"}>
                 <MenuItem
-                                onClick={()=>{menuBtn.current.click()}}
-
+                  onClick={() => {
+                    menuBtn.current.click();
+                  }}
                   my="5px"
                   fontWeight={"semibold"}
                   icon={<HiCode size={"18px"} color="#635dff" />}
-                  borderRight={Router.pathname === "/Compiler" ? "3px solid #635dff" :""}    
+                  borderRight={
+                    Router.pathname === "/Compiler" ? "3px solid #635dff" : ""
+                  }
                 >
                   Online Compiler
                 </MenuItem>
               </Link>
               <MenuItem
-                              onClick={()=>{menuBtn.current.click()}}
-
+                onClick={() => {
+                  menuBtn.current.click();
+                }}
                 my="5px"
                 fontWeight={"semibold"}
                 icon={<BsQuestionSquare size={"18px"} color="#635dff" />}
-                borderRight={Router.pathname === "/about" ? "3px solid #635dff" :""} 
+                borderRight={
+                  Router.pathname === "/about" ? "3px solid #635dff" : ""
+                }
               >
                 About
               </MenuItem>
@@ -343,7 +371,7 @@ const menuBtn = useRef()
                         // border={"1px"}
                         // borderColor="gray.100"
                         name={user ? user.name : "User"}
-                        src="#"
+                        src={user.profileImage ? user.profileImage : "#"}
                       />
                     </MenuButton>
                     <MenuList
@@ -355,13 +383,15 @@ const menuBtn = useRef()
                       left={"-5rem"}
                     >
                       <Flex direction={"column"}>
-                        <Button
-                          variant={"ghost"}
-                          colorScheme={"guru"}
-                          // onClick={handleLogout}
-                        >
-                          My Account
-                        </Button>
+                        <Link href={"/profile"}>
+                          <Button
+                            variant={"ghost"}
+                            colorScheme={"guru"}
+                            // onClick={handleLogout}
+                          >
+                            My Account
+                          </Button>
+                        </Link>
                         <Button
                           variant={"ghost"}
                           colorScheme={"guru"}

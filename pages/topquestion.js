@@ -41,7 +41,7 @@ const Question = ({ questions }) => {
     <>
       {questions.length ? (
         <>
-          <Flex direction={"column"} align="center">
+          <Flex height={"100vh"} direction={"column"} align="center">
             <Flex
               //   border={"1px"}
               justify="space-between"
@@ -56,7 +56,7 @@ const Question = ({ questions }) => {
                 my={"2rem"}
                 //   ml="15rem"
               >
-                Top Questions
+                Questions
               </Heading>
 
               {user ? (
@@ -172,9 +172,12 @@ export async function getServerSideProps(context) {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_Host_URL}api/getAllQuestion`
     );
-    // console.log(response.data);
+    console.log(response.data.payload);
     return {
-      props: { questions: response.data.payload.data },
+      props: {
+        questions:
+          response.data.payload != null ? response.data.payload.data : [],
+      },
     };
   } catch (error) {
     console.error(error);
